@@ -46,6 +46,7 @@ class Mine
 			case eMineState.QuestionMark:
 				fill(0,0,255)
 				rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
+				fill(255,255,255)
 				text("?", this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
 				break;
 
