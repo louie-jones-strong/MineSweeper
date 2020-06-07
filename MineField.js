@@ -36,14 +36,6 @@ class MineField
 
 	TouchEvent(mousePos, isRight)
 	{
-		if (mousePos.x > BoxSizeX || 
-			mousePos.x < 0 ||
-			mousePos.y > BoxSizeY || 
-			mousePos.y < 0)
-		{
-			return
-		}
-
 		touchX = int(mousePos.x / (BoxSizeX/this.MineCountX))
 		touchY = int(mousePos.y / (BoxSizeY/this.MineCountY))
 

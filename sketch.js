@@ -4,6 +4,14 @@ function preload()
 
 function setup()
 {
+	//use this to disable right click button for this page
+	document.addEventListener('contextmenu', event => {
+		if(InRegion(createVector(mouseX, mouseY)))
+		{
+			event.preventDefault()
+		}
+	});
+
 	BoxSizeX = 750
 	BoxSizeY = 750
 	createCanvas(BoxSizeX, BoxSizeY);
@@ -21,7 +29,8 @@ function draw()
 
 	if (mouseIsPressed && !LastFramePressed &&
 		(mouseButton == LEFT ||
-		mouseButton == RIGHT))
+		mouseButton == RIGHT) &&
+		InRegion(mousePos))
 	{
 		mineField.TouchEvent(mousePos, mouseButton == RIGHT)
 	}
@@ -36,4 +45,12 @@ function draw()
 	stroke(0,0,0)
 
 	point(mousePos.x, mousePos.y)
+}
+
+function InRegion(mousePos)
+{
+	return mousePos.x < BoxSizeX &&
+		mousePos.x > 0 &&
+		mousePos.y < BoxSizeY &&
+		mousePos.y > 0
 }
