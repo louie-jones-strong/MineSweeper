@@ -1,7 +1,9 @@
-const eState = {
+const eMineState = {
 	Normal: 0,
-	Exploded: 1,
-	Empty: 2,
+	Flagged: 1,
+	QuestionMark: 2,
+	Exploded: 3,
+	Empty: 4
 }
 
 class Mine
@@ -10,8 +12,14 @@ class Mine
 	{
 		this.Pos = pos
 		this.Size = size
-		this.State = eState.Normal
 		this.IsMine = isMine
+		this.SetState(eMineState.Normal)
+	}
+
+	SetState(state)
+	{
+		this.State = state
+		// this is not needed atm this.TimeInState = 0
 	}
 
 	Draw()
@@ -23,22 +31,16 @@ class Mine
 		strokeWeight(2)
 		switch (this.State) 
 		{
-			case eState.Normal:
+			case eMineState.Normal:
 				rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
 				break;
-			case eState.Empty:
+			case eMineState.Empty:
 				break;
+			case eMineState.Exploded:
+				fill(255,0,0)
+				rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
+				break
 		}
 		
-		if (this.IsMine)
-		{
-			fill(255,0,0)
-			rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
-		}
-	}
-
-	Touch()
-	{
-		this.State = eState.Empty
 	}
 }

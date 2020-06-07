@@ -4,8 +4,8 @@ class MineField
 	{
 		BoxSizeX, BoxSizeY
 
-		this.MineCountY = 25
-		this.MineCountX = 25
+		this.MineCountY = 5
+		this.MineCountX = 5
 
 		var size = createVector(BoxSizeX/this.MineCountX, BoxSizeY/this.MineCountY)
 
@@ -15,7 +15,7 @@ class MineField
 			var temp = []
 			for (let x = 0; x < this.MineCountX; x++)
 			{
-				var isMine = Math.random()*100 <= 1
+				var isMine = Math.random()*100 <= 10
 				var pos = createVector(x*size.x, y*size.y)
 				temp.push(new Mine(pos, size, isMine))
 			}
@@ -43,9 +43,39 @@ class MineField
 		{
 			return
 		}
+
 		touchX = int(mousePos.x / (BoxSizeX/this.MineCountX))
 		touchY = int(mousePos.y / (BoxSizeY/this.MineCountY))
 
-		this.Grid[touchY][touchX].Touch(isRight)
+		var mine = this.Grid[touchY][touchX]
+
+		if (isRight)
+		{
+			switch (mine.State) 
+			{
+				case eMineState.Normal:
+					mine.SetState(eMineState.Flagged)
+					break;
+
+				case eMineState.Flagged:
+					mine.SetState(eMineState.QuestionMark)
+					break;
+
+				case eMineState.QuestionMark:
+					mine.SetState(eMineState.Normal)
+					break;
+				default:
+					break;
+			}
+		}
+		else if (mine.IsMine)
+		{
+			mine.SetState(eMineState.Exploded)
+			// need to reveal area around it
+		}
+		else
+		{
+			mine.SetState(eMineState.Empty)
+		}
 	}
 }
