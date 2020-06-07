@@ -2,8 +2,8 @@ const eMineState = {
 	Normal: 0,
 	Flagged: 1,
 	QuestionMark: 2,
-	Exploded: 3,
-	Empty: 4
+	Empty: 3,
+	Exploded: 4
 }
 
 class Mine
@@ -14,6 +14,7 @@ class Mine
 		this.Size = size
 		this.IsMine = isMine
 		this.SetState(eMineState.Normal)
+		this.MinesNear = 2
 	}
 
 	SetState(state)
@@ -25,21 +26,38 @@ class Mine
 	Draw()
 	{
 
-		
-		stroke(0,0,0)
 		fill(255,255,255)
+		stroke(0,0,0)
 		strokeWeight(2)
+		textSize(100);
+
 		switch (this.State) 
 		{
 			case eMineState.Normal:
+				fill(255,255,255)
 				rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
 				break;
-			case eMineState.Empty:
+
+			case eMineState.Flagged:
+				fill(0,255,0)
+				rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
 				break;
+				
+			case eMineState.QuestionMark:
+				fill(0,0,255)
+				rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
+				text("?", this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
+				break;
+
+			case eMineState.Empty:
+				strokeWeight(6)
+				text(this.MinesNear.toString(), this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
+				break;
+
 			case eMineState.Exploded:
 				fill(255,0,0)
 				rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
-				break
+				break;
 		}
 		
 	}

@@ -68,14 +68,17 @@ class MineField
 					break;
 			}
 		}
-		else if (mine.IsMine)
+		else if (mine.State != eMineState.Flagged && mine.State != eMineState.QuestionMark)
 		{
-			mine.SetState(eMineState.Exploded)
-			// need to reveal area around it
-		}
-		else
-		{
-			mine.SetState(eMineState.Empty)
+			if (mine.IsMine)
+			{
+				mine.SetState(eMineState.Exploded)
+				// need to reveal area around it
+			}
+			else
+			{
+				mine.SetState(eMineState.Empty)
+			}
 		}
 	}
 }
