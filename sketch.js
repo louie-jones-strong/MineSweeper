@@ -18,6 +18,7 @@ function setup()
 	strokeWeight(4);
 	mineField = new MineField()
 	LastFramePressed = false
+	FirstFrame = true
 }
 
 
@@ -36,15 +37,10 @@ function draw()
 	}
 	LastFramePressed = mouseIsPressed
 
-	stroke(0,0,0)
-	strokeWeight(2)
-
-	mineField.Draw()
-
-	strokeWeight(10)
-	stroke(0,0,0)
-
-	point(mousePos.x, mousePos.y)
+	if (FirstFrame)
+	{
+		mineField.Draw()
+	}
 }
 
 function InRegion(mousePos)

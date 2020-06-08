@@ -22,7 +22,7 @@ class MineField
 			for (let x = 0; x < this.CellCountX; x++)
 			{
 				var isMine = Math.random()*100 <= 10
-				var pos = createVector(x*cellSize.x, y*cellSize.y)
+				var pos = createVector(x, y)
 				var cell = new Cell(pos, cellSize, isMine)
 
 				temp.push(cell)
@@ -38,7 +38,7 @@ class MineField
 				
 				if (cell.IsMine)
 				{
-					this.GetAllowedNearCells(x, y).forEach(nearCell => {
+					this.GetAllowedNearCells(cell).forEach(nearCell => {
 						nearCell.MinesNear += 1
 					});
 				}
@@ -46,49 +46,47 @@ class MineField
 		}
 	}
 
-	GetAllowedNearCells(x, y)
+	CheckFinshed()
 	{
+		for (let y = 0; y < this.CellCountY; y++)
+		{
+			for (let x = 0; x < this.CellCountX; x++)
+			{
+				var cell = this.Grid[x][y]
+				
+				if (!cell.IsMine && cell.State != eCellState.Empty)
+				{
+					return false
+				}
+			}
+		}
+		return true
+	}
+
+	GetAllowedNearCells(cell, stateFiliter=eCellState.Normal)
+	{
+		var x = cell.GridPos.x
+		var y = cell.GridPos.y
+
 		var cellList = []
-		if (x-1 >= 0)
+		for (let xOffSet = -1; xOffSet <= 1; xOffSet++) 
 		{
-			if (y-1 >= 0)
+			if (x+xOffSet >= 0 && x+xOffSet < this.CellCountX)
 			{
-				cellList.push(this.Grid[x-1][y-1])
-			}
-
-			cellList.push(this.Grid[x-1][y])
-
-			if (y+1 <this.CellCountY)
-			{
-				cellList.push(this.Grid[x-1][y+1])
-			}
-		}
-		
-		if (y-1 >= 0)
-		{
-			cellList.push(this.Grid[x][y-1])
-		}
-
-		if (y+1 <this.CellCountY)
-		{
-			cellList.push(this.Grid[x][y+1])
-		}
-
-		if (x+1 <this.CellCountX)
-		{
-			if (y-1 >= 0)
-			{
-				cellList.push(this.Grid[x+1][y-1])
-			}
-
-			cellList.push(this.Grid[x+1][y])
-
-			if (y+1 <this.CellCountY)
-			{
-				cellList.push(this.Grid[x+1][y+1])
+				for (let yOffSet = -1; yOffSet <= 1; yOffSet ++) 
+				{
+					if (y+yOffSet >= 0 && y+yOffSet < this.CellCountY &&
+						!(yOffSet == 0 && xOffSet == 0))
+					{
+						var subCell = this.Grid[y+yOffSet][x+xOffSet]
+						if (subCell.State & stateFiliter == subCell.State)
+						{
+							cellList.push(subCell)
+						}
+					}
+				}
 			}
 		}
-		
 		return cellList
 	}
 
@@ -125,8 +123,6 @@ class MineField
 				case eCellState.QuestionMark:
 					cell.SetState(eCellState.Normal)
 					break;
-				default:
-					break;
 			}
 		}
 		else if (cell.State != eCellState.Flagged && cell.State != eCellState.QuestionMark)
@@ -135,11 +131,32 @@ class MineField
 			{
 				cell.SetState(eCellState.Exploded)
 				//game is now over
+				this.MakeField()
 			}
 			else
 			{
-				cell.SetState(eCellState.Empty)
+				this.RevealCell(cell)
 				// need to reveal area around it
+
+				if (this.CheckFinshed())
+				{
+					this.MakeField()
+				}
+			}
+		}
+		this.Draw()
+	}
+
+	RevealCell(cell)
+	{
+		if (!cell.IsMine)
+		{
+			cell.SetState(eCellState.Empty)
+			if (cell.MinesNear == 0)
+			{
+				this.GetAllowedNearCells(cell, eCellState.Normal).forEach(nearCell => {
+					this.RevealCell(nearCell)
+				});
 			}
 		}
 	}

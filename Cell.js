@@ -1,16 +1,17 @@
 const eCellState = {
-	Normal: 0,
-	Flagged: 1,
-	QuestionMark: 2,
-	Empty: 3,
-	Exploded: 4
+	Normal: 1,
+	Flagged: 2,
+	QuestionMark: 4,
+	Empty: 8,
+	All: 15
 }
 
 class Cell
 {
-	constructor(pos, size, isMine)
+	constructor(gridPos, size, isMine)
 	{
-		this.Pos = pos
+		this.GridPos = gridPos
+		this.Pos = createVector(gridPos.x*size.x, gridPos.y*size.y)
 		this.Size = size
 		this.IsMine = isMine
 		this.SetState(eCellState.Normal)
@@ -51,18 +52,24 @@ class Cell
 				break;
 
 			case eCellState.Empty:
-				if (this.MinesNear > 0)
+				if (this.IsMine)
+				{
+					fill(255,0,0)
+					rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
+				}
+				else if (this.MinesNear > 0)
 				{
 					strokeWeight(6)
 					text(this.MinesNear.toString(), this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
 				}
 				break;
-
-			case eCellState.Exploded:
-				fill(255,0,0)
-				rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
-				break;
 		}
+
+		// if (this.IsMine)
+		// {
+		// 	fill(255,0,0)
+		// 	rect(this.Pos.x, this.Pos.y, this.Size.x/4, this.Size.y/4)
+		// }
 		
 	}
 }
