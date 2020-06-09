@@ -4,9 +4,9 @@ class MineField
 	{
 		BoxSizeX, BoxSizeY
 
-		this.CellCountY = 5
-		this.CellCountX = 5
-		this.NumberOfMines = 5
+		this.CellCountY = 10
+		this.CellCountX = 10
+		this.NumberOfMines = 3
 
 		this.MakeField()
 	}
@@ -36,7 +36,6 @@ class MineField
 			var pickedItem = itemsToPickFrom[Math.floor(Math.random() * itemsToPickFrom.length)];
 			var index = itemsToPickFrom.indexOf(pickedItem);
 			itemsToPickFrom.splice(index, 1)
-			console.log(index, itemsToPickFrom.length)
 
 			pickedItem.IsMine = true
 			this.GetAllowedNearCells(pickedItem).forEach(nearCell => {

@@ -26,7 +26,6 @@ class Cell
 
 	Draw()
 	{
-
 		fill(255,255,255)
 		stroke(0,0,0)
 		strokeWeight(2)
@@ -48,7 +47,7 @@ class Cell
 				fill(0,0,255)
 				rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
 				fill(255,255,255)
-				text("?", this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
+				this.TextToFitBox("?")
 				break;
 
 			case eCellState.Empty:
@@ -60,16 +59,27 @@ class Cell
 				else if (this.MinesNear > 0)
 				{
 					strokeWeight(6)
-					text(this.MinesNear.toString(), this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
+					this.TextToFitBox(this.MinesNear.toString())
 				}
 				break;
 		}
-
 		// if (this.IsMine)
 		// {
 		// 	fill(255,0,0)
 		// 	rect(this.Pos.x, this.Pos.y, this.Size.x/4, this.Size.y/4)
 		// }
 		
+	}
+
+	TextToFitBox(string)
+	{
+		textSize(this.Size.y)
+		var width = textWidth(string)
+		var newSize = min(this.Size.y, this.Size.y*(this.Size.x/width))
+		textSize(newSize)
+		var yOffset = (this.Size.y - newSize)/2
+		var xOffset = (this.Size.x - width)/2
+
+		text(string, this.Pos.x+xOffset, this.Pos.y+yOffset, this.Size.x, this.Size.y)
 	}
 }
