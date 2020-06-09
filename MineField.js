@@ -14,35 +14,34 @@ class MineField
 	MakeField()
 	{
 		var cellSize = createVector(BoxSizeX/this.CellCountX, BoxSizeY/this.CellCountY)
-
 		this.Grid = []
+		var itemsToPickFrom = []
 		for (let y = 0; y < this.CellCountY; y++)
 		{
 			var temp = []
 			for (let x = 0; x < this.CellCountX; x++)
 			{
-				var isMine = Math.random()*100 <= 10
-				var pos = createVector(x, y)
-				var cell = new Cell(pos, cellSize, isMine)
-
+				var cell  = new Cell(createVector(x, y), cellSize)
 				temp.push(cell)
+				itemsToPickFrom.push(cell)
 			}
 			this.Grid.push(temp)
 		}
 
-		for (let y = 0; y < this.CellCountY; y++)
+
+
+		
+		for (let mineNum = 0; mineNum < this.NumberOfMines; mineNum++)
 		{
-			for (let x = 0; x < this.CellCountX; x++)
-			{
-				var cell = this.Grid[x][y]
-				
-				if (cell.IsMine)
-				{
-					this.GetAllowedNearCells(cell).forEach(nearCell => {
-						nearCell.MinesNear += 1
-					});
-				}
-			}
+			var pickedItem = itemsToPickFrom[Math.floor(Math.random() * itemsToPickFrom.length)];
+			var index = itemsToPickFrom.indexOf(pickedItem);
+			itemsToPickFrom.splice(index, 1)
+			console.log(index, itemsToPickFrom.length)
+
+			pickedItem.IsMine = true
+			this.GetAllowedNearCells(pickedItem).forEach(nearCell => {
+				nearCell.MinesNear += 1
+			});
 		}
 	}
 
