@@ -56,10 +56,20 @@ class Cell
 					fill(255,0,0)
 					rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
 				}
-				else if (this.MinesNear > 0)
+				else 
 				{
-					strokeWeight(6)
-					this.TextToFitBox(this.MinesNear.toString())
+					strokeWeight(1)
+					stroke(0,0,0,25)
+					noFill()
+					rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
+
+					if (this.MinesNear > 0)
+					{
+						stroke(0,0,0)
+						fill(255,255,255)
+						strokeWeight(6)
+						this.TextToFitBox(this.MinesNear.toString())
+					}
 				}
 				break;
 		}
