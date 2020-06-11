@@ -14,6 +14,9 @@ class MineField
 
 	MakeField()
 	{
+		this.StopWatch = 0
+		this.NumInteractions = 0
+
 		var cellSize = createVector(this.Size.x/this.CellCountX, this.Size.y/this.CellCountY)
 		this.Grid = []
 		var itemsToPickFrom = []
@@ -89,8 +92,15 @@ class MineField
 		return cellList
 	}
 
-	Draw(mousePos)
+	Draw(deltaTime)
 	{
+		if (this.NumInteractions > 0)
+		{
+			this.StopWatch += deltaTime
+
+			this.StopWatch = round(this.StopWatch*100)/100
+		}
+
 		this.Grid.forEach(y => 
 		{
 			y.forEach(cell => 
@@ -109,6 +119,7 @@ class MineField
 
 		if (isRight)
 		{
+			this.NumInteractions += 1
 			switch (cell.State) 
 			{
 				case eCellState.Normal:
@@ -126,6 +137,7 @@ class MineField
 		}
 		else if (cell.State != eCellState.Flagged && cell.State != eCellState.QuestionMark)
 		{
+			this.NumInteractions += 1
 			if (cell.IsMine)
 			{
 				cell.SetState(eCellState.Exploded)
@@ -143,7 +155,6 @@ class MineField
 				}
 			}
 		}
-		this.Draw()
 	}
 
 	RevealCell(cell)

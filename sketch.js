@@ -18,13 +18,16 @@ function setup()
 	strokeWeight(4);
 	mineField = new MineField(createVector(0, 100), createVector(750,750))
 	LastFramePressed = false
-	FirstFrame = true
+	LastFrameTime = millis()
 }
 
 
 function draw()
 {
 	background(100);
+	deltaTime = millis() - LastFrameTime
+	deltaTime /= 1000
+	LastFrameTime = millis()
 
 	mousePos = createVector(mouseX, mouseY)
 
@@ -37,10 +40,13 @@ function draw()
 	}
 	LastFramePressed = mouseIsPressed
 
-	if (FirstFrame)
-	{
-		mineField.Draw()
-	}
+	mineField.Draw(deltaTime)
+
+	fill(255,255,255)
+	stroke(0,0,0)
+	strokeWeight(2)
+	textSize(50);
+	text(mineField.StopWatch, 0, 25, 100,100)
 }
 
 function InRegion(mousePos)
