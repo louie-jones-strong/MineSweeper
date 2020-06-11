@@ -13,10 +13,10 @@ function setup()
 	});
 
 	BoxSizeX = 750
-	BoxSizeY = 750
+	BoxSizeY = 850
 	createCanvas(BoxSizeX, BoxSizeY);
 	strokeWeight(4);
-	mineField = new MineField()
+	mineField = new MineField(createVector(0, 100), createVector(750,750))
 	LastFramePressed = false
 	FirstFrame = true
 }

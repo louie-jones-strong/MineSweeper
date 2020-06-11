@@ -1,8 +1,9 @@
 class MineField
 {
-	constructor()
+	constructor(pos, size)
 	{
-		BoxSizeX, BoxSizeY
+		this.Pos = pos
+		this.Size = size
 
 		this.CellCountY = 10
 		this.CellCountX = 10
@@ -13,7 +14,7 @@ class MineField
 
 	MakeField()
 	{
-		var cellSize = createVector(BoxSizeX/this.CellCountX, BoxSizeY/this.CellCountY)
+		var cellSize = createVector(this.Size.x/this.CellCountX, this.Size.y/this.CellCountY)
 		this.Grid = []
 		var itemsToPickFrom = []
 		for (let y = 0; y < this.CellCountY; y++)
@@ -21,7 +22,7 @@ class MineField
 			var temp = []
 			for (let x = 0; x < this.CellCountX; x++)
 			{
-				var cell  = new Cell(createVector(x, y), cellSize)
+				var cell  = new Cell(createVector(x, y), cellSize, this.Pos)
 				temp.push(cell)
 				itemsToPickFrom.push(cell)
 			}
@@ -101,8 +102,8 @@ class MineField
 
 	TouchEvent(mousePos, isRight)
 	{
-		touchX = int(mousePos.x / (BoxSizeX/this.CellCountX))
-		touchY = int(mousePos.y / (BoxSizeY/this.CellCountY))
+		touchX = int((mousePos.x-this.Pos.x) / (this.Size.x/this.CellCountX))
+		touchY = int((mousePos.y-this.Pos.y) / (this.Size.y/this.CellCountY))
 
 		var cell = this.Grid[touchY][touchX]
 

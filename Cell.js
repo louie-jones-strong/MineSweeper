@@ -8,12 +8,12 @@ const eCellState = {
 
 class Cell
 {
-	constructor(gridPos, size, isMine)
+	constructor(gridPos, size, posOffSet)
 	{
 		this.GridPos = gridPos
-		this.Pos = createVector(gridPos.x*size.x, gridPos.y*size.y)
+		this.Pos = createVector((gridPos.x*size.x)+posOffSet.x, (gridPos.y*size.y)+posOffSet.y)
 		this.Size = size
-		this.IsMine = isMine
+		this.IsMine = false
 		this.SetState(eCellState.Normal)
 		this.MinesNear = 0
 	}
