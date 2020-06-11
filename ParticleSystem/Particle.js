@@ -7,7 +7,8 @@ class Particle
 
 		this.Size = this.GetRandomFromRange(minSize, maxSize)
 		
-		this.Velocity = createVector(Math.random()*2-1, Math.random()*2-1)
+		this.Velocity = createVector(Math.random()*4-2, Math.random()*4-2)
+		this.Acceleration = this.GetRandomFromRange(0.9, 1)
 
 		this.LifeTime = this.GetRandomFromRange(minLifeTime, maxLifeTime)
 	}
@@ -36,8 +37,8 @@ class Particle
 		noStroke()
 		this.TimeAlive += deltaTime
 
-		//this.Velocity.x += this.Acceleration.x * deltaTime
-		//this.Velocity.y += this.Acceleration.y * deltaTime
+		this.Velocity.x *= this.Acceleration
+		this.Velocity.y *= this.Acceleration
 
 		this.Pos.x += this.Velocity.x// * deltaTime
 		this.Pos.y += this.Velocity.y// * deltaTime
