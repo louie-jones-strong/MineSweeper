@@ -8,9 +8,11 @@ class Particle
 		this.Size = this.GetRandomFromRange(minSize, maxSize)
 		
 		this.Velocity = createVector(Math.random()*4-2, Math.random()*4-2)
-		this.Acceleration = this.GetRandomFromRange(0.9, 1)
+		this.Acceleration = this.GetRandomFromRange(0.9, 0.99)
 
 		this.LifeTime = this.GetRandomFromRange(minLifeTime, maxLifeTime)
+		
+		this.Color = color(0, 0, 0)
 	}
 
 	GetRandomFromRange(min, max)
@@ -25,7 +27,7 @@ class Particle
 
 	CanRemove()
 	{
-		if (this.TimeAlive >= this.LifeTime*2)
+		if (this.TimeAlive >= this.LifeTime*2 && this.LifeTime >= 1)
 		{
 			console.error("particle been alive too long!!")
 		}
@@ -40,8 +42,9 @@ class Particle
 		this.Velocity.x *= this.Acceleration
 		this.Velocity.y *= this.Acceleration
 
-		this.Pos.x += this.Velocity.x// * deltaTime
-		this.Pos.y += this.Velocity.y// * deltaTime
+		this.Pos.x += this.Velocity.x
+		this.Pos.y += this.Velocity.y
+		
 
 		fill(0,0,0, 255-(this.TimeAlive/this.LifeTime)*255)
 		ellipse(this.Pos.x, this.Pos.y, this.Size, this.Size)
