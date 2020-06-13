@@ -49,7 +49,14 @@ function draw()
 	stroke(0,0,0)
 	strokeWeight(2)
 	textSize(50);
-	text(mineField.StopWatch, 0, 25, 100,100)
+
+	temp = ""
+	if (Math.floor(mineField.StopWatch / 60) > 0)
+	{
+		temp = Math.floor(mineField.StopWatch / 60)+":"
+	}
+	temp += round((mineField.StopWatch % 60)*100)/100
+	text(temp, 0, 25, 100,100)
 }
 
 function InRegion(mousePos)

@@ -97,8 +97,6 @@ class MineField
 		if (this.NumInteractions > 0)
 		{
 			this.StopWatch += deltaTime
-
-			this.StopWatch = round(this.StopWatch*100)/100
 		}
 
 		this.Grid.forEach(y => 
