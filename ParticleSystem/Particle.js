@@ -46,7 +46,7 @@ class Particle
 		this.Pos.y += this.Velocity.y
 		
 
-		fill(0,0,0, 255-(this.TimeAlive/this.LifeTime)*255)
+		fill(255,150,0, 255-(this.TimeAlive/this.LifeTime)*255)
 		ellipse(this.Pos.x, this.Pos.y, this.Size, this.Size)
 	}
 }

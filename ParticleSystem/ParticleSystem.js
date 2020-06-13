@@ -5,43 +5,59 @@ const eEmitterShape = {
 
 class ParticleSystem
 {
-	constructor(pos, duration=-1, numParticles=100,emitterShape=eEmitterShape.Point)
+	constructor(pos, duration=-1, numOfParticles=5, emitterShape=eEmitterShape.Point, emitterSize=75)
 	{
 		this.Pos = pos
 		this.Particles = []
 		this.LastFrameTime = millis()
+
 		this.EmitterShape = emitterShape
+		this.EmitterSize = emitterSize
+
+
 		this.Duration = duration
-		this.NumberOfParticles = numParticles
+		this.NumberOfParticles = numOfParticles
 		this.TimeSinceLastParticle = 0
 		this.TimeAlive = 0
+		this.Started = false
+	}
+
+	Play()
+	{
+		this.Started = true
+		this.TimeSinceLastParticle = 0
+		this.TimeAlive = 0
+		this.LastFrameTime = millis()
 	}
 
 	Draw()
 	{
-		var deltaTime = millis() - LastFrameTime
-		deltaTime /= 100
-		this.LastFrameTime = millis()
-		this.TimeSinceLastParticle += deltaTime
-		this.TimeAlive += deltaTime
-		
-		for (let loop = this.Particles.length-1; loop > 0; loop-- )
+		if (this.Started)
 		{
-			var particle = this.Particles[loop];
-			particle.Draw(deltaTime)
+			var deltaTime = millis() - this.LastFrameTime
+			deltaTime /= 1000
+			this.LastFrameTime = millis()
+			this.TimeSinceLastParticle += deltaTime
+			this.TimeAlive += deltaTime
 			
-			if (particle.CanRemove())
+			for (let loop = this.Particles.length-1; loop > 0; loop-- )
 			{
-				this.Particles.splice(loop, 1)
+				var particle = this.Particles[loop];
+				particle.Draw(deltaTime)
+				
+				if (particle.CanRemove())
+				{
+					this.Particles.splice(loop, 1)
+				}
 			}
-		}
 
-		this.EmitParticle()
+			this.EmitParticle()
+		}
 	}
 
 	EmitParticle()
 	{
-		var numToAdd = 1
+		var numToAdd = this.NumberOfParticles
 		
 		if (this.TimeAlive > this.Duration && this.Duration > 0)
 		{
@@ -55,7 +71,23 @@ class ParticleSystem
 
 		for (let loop = 0; loop < numToAdd; loop++)
 		{
-			var particle = new Particle(this.Pos, 0.2, 1, 2, 6)
+			var pos = createVector(this.Pos.x, this.Pos.y)
+			if (this.EmitterShape == eEmitterShape.Square)
+			{
+				if (Math.random()-0.5 < 0)
+				{
+					pos.x += Math.random()*this.EmitterSize
+					pos.y += Math.floor(Math.random()*2)*this.EmitterSize
+				}
+				else
+				{
+					pos.x += Math.floor(Math.random()*2)*this.EmitterSize
+					pos.y += Math.random()*this.EmitterSize
+				}
+			}
+
+
+			var particle = new Particle(pos, 0.2, 1, 2, 6)
 			this.Particles.push(particle)
 			this.TimeSinceLastParticle = 0
 		}

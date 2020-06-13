@@ -16,12 +16,26 @@ class Cell
 		this.IsMine = false
 		this.SetState(eCellState.Normal)
 		this.MinesNear = 0
+
+		this.ParticleSystem = new ParticleSystem(this.Pos, 0.2, 50, eEmitterShape.Square)
 	}
 
 	SetState(state)
 	{
-		this.State = state
 		// this is not needed atm this.TimeInState = 0
+		if (this.State != state)
+		{
+			switch (state) 
+			{
+				case eCellState.Empty:
+					this.ParticleSystem.Play()
+					break;
+			
+				default:
+					break;
+			}
+		}
+		this.State = state
 	}
 
 	Draw()
@@ -78,7 +92,11 @@ class Cell
 		// 	fill(255,0,0)
 		// 	rect(this.Pos.x, this.Pos.y, this.Size.x/4, this.Size.y/4)
 		// }
-		
+	}
+
+	DrawParticles()
+	{
+		this.ParticleSystem.Draw()
 	}
 
 	TextToFitBox(string)

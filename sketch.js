@@ -19,8 +19,6 @@ function setup()
 	mineField = new MineField(createVector(0, 100), createVector(750,750))
 	LastFramePressed = false
 	LastFrameTime = millis()
-
-	ps = new ParticleSystem(createVector(BoxSizeX / 2, BoxSizeY/2))
 }
 
 
@@ -49,9 +47,6 @@ function draw()
 	strokeWeight(2)
 	textSize(50);
 	text(mineField.StopWatch, 0, 25, 100,100)
-
-	ps.Pos = mousePos
-	ps.Draw()
 }
 
 function InRegion(mousePos)

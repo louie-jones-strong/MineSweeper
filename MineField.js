@@ -7,7 +7,7 @@ class MineField
 
 		this.CellCountY = 10
 		this.CellCountX = 10
-		this.NumberOfMines = 3
+		this.NumberOfMines = 10
 
 		this.MakeField()
 	}
@@ -106,6 +106,14 @@ class MineField
 			y.forEach(cell => 
 			{
 				cell.Draw()
+			});
+		});
+
+		this.Grid.forEach(y => 
+		{
+			y.forEach(cell => 
+			{
+				cell.DrawParticles()
 			});
 		});
 	}
