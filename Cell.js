@@ -17,7 +17,7 @@ class Cell
 		this.SetState(eCellState.Normal)
 		this.MinesNear = 0
 
-		this.ParticleSystem = new ParticleSystem(this.Pos, 0.2, 50, eEmitterShape.Square)
+		this.ParticleSystem = new ParticleSystem(this.Pos, 0.2, 50, eEmitterShape.Square, this.Size)
 	}
 
 	SetState(state)

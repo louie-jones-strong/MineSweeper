@@ -5,7 +5,7 @@ const eEmitterShape = {
 
 class ParticleSystem
 {
-	constructor(pos, duration=-1, numOfParticles=5, emitterShape=eEmitterShape.Point, emitterSize=75)
+	constructor(pos, duration, numOfParticles, emitterShape, emitterSize)
 	{
 		this.Pos = pos
 		this.Particles = []
@@ -76,13 +76,13 @@ class ParticleSystem
 			{
 				if (Math.random()-0.5 < 0)
 				{
-					pos.x += Math.random()*this.EmitterSize
-					pos.y += Math.floor(Math.random()*2)*this.EmitterSize
+					pos.x += Math.random()*this.EmitterSize.x
+					pos.y += Math.floor(Math.random()*2)*this.EmitterSize.y
 				}
 				else
 				{
-					pos.x += Math.floor(Math.random()*2)*this.EmitterSize
-					pos.y += Math.random()*this.EmitterSize
+					pos.x += Math.floor(Math.random()*2)*this.EmitterSize.x
+					pos.y += Math.random()*this.EmitterSize.y
 				}
 			}
 
