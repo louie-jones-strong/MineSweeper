@@ -48,20 +48,15 @@ class Cell
 		switch (this.State) 
 		{
 			case eCellState.Normal:
-				fill(255,255,255)
-				rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
+				image(CellNormalImage, this.Pos.x, this.Pos.y, this.Size.x, this.Size.y);
 				break;
 
 			case eCellState.Flagged:
-				fill(0,255,0)
-				rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
+				image(CellFlaggedImage, this.Pos.x, this.Pos.y, this.Size.x, this.Size.y);
 				break;
 				
 			case eCellState.QuestionMark:
-				fill(0,0,255)
-				rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
-				fill(255,255,255)
-				this.TextToFitBox("?")
+				image(CellQuestionMarkImage, this.Pos.x, this.Pos.y, this.Size.x, this.Size.y);
 				break;
 
 			case eCellState.Empty:
