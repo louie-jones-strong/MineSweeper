@@ -1,6 +1,6 @@
 class Particle
 {
-	constructor(pos, minLifeTime, maxLifeTime=null, minSize, maxSize)
+	constructor(pos, minLifeTime, maxLifeTime, minSize, maxSize)
 	{
 		this.TimeAlive = 0
 		this.Pos = createVector(pos.x, pos.y)

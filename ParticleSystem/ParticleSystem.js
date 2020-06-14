@@ -5,24 +5,22 @@ const eEmitterShape = {
 
 class ParticleSystem
 {
-	constructor(pos, duration, numOfParticles, emitterShape, emitterSize)
+	constructor(pos, emitterSize=0)
 	{
 		this.Pos = pos
 		this.Particles = []
 		this.LastFrameTime = millis()
-
-		this.EmitterShape = emitterShape
 		this.EmitterSize = emitterSize
 
 
-		this.Duration = duration
-		this.NumberOfParticles = numOfParticles
 		this.TimeSinceLastParticle = 0
 		this.TimeAlive = 0
 		this.Started = false
 
 		this.SetColour(255, 255, 255)
 		this.SetParticleSize(5, 10)
+		this.SetEmitSetting(eEmitterShape.Point, 0.2, 50)
+		this.SetParticleLifeTime(0.2, 1)
 	}
 
 	SetColour(red, green, blue)
@@ -36,6 +34,18 @@ class ParticleSystem
 	{
 		this.MinSize = minSize
 		this.MaxSize = maxSize
+	}
+
+	SetEmitSetting(emitterShape, duration, numOfParticles)
+	{
+		this.EmitterShape = emitterShape
+		this.Duration = duration
+		this.NumberOfParticles = numOfParticles
+	}
+	SetParticleLifeTime(min, max=null)
+	{
+		this.MinLifeTime = min
+		this.MaxLifeTime = max
 	}
 
 	Play()
@@ -106,7 +116,7 @@ class ParticleSystem
 			}
 
 
-			var particle = new Particle(pos, 0.2, 1, this.MinSize, this.MaxSize)
+			var particle = new Particle(pos, this.MinLifeTime, this.MaxLifeTime, this.MinSize, this.MaxSize)
 			particle.SetColour(this.ColourRed, this.ColourGreen, this.ColourBlue)
 			this.Particles.push(particle)
 			this.TimeSinceLastParticle = 0
