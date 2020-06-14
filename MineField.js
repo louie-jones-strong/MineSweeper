@@ -17,6 +17,7 @@ class MineField
 		this.StopWatch = 0
 		this.NumInteractions = 0
 		this.InputBlocked = false
+		this.NumberCellsMarked = 0
 
 		var cellSize = createVector(this.Size.x/this.CellCountX, this.Size.y/this.CellCountY)
 		this.Grid = []
@@ -135,10 +136,12 @@ class MineField
 			switch (cell.State) 
 			{
 				case eCellState.Normal:
+					this.NumberCellsMarked += 1
 					cell.SetState(eCellState.Flagged)
 					break;
 
 				case eCellState.Flagged:
+					this.NumberCellsMarked -= 1
 					cell.SetState(eCellState.QuestionMark)
 					break;
 

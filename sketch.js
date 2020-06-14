@@ -50,6 +50,7 @@ function draw()
 	strokeWeight(2)
 	textSize(50);
 
+	//Draw timer
 	temp = ""
 	if (Math.floor(mineField.StopWatch / 60) > 0)
 	{
@@ -57,7 +58,13 @@ function draw()
 	}
 	temp += round((mineField.StopWatch % 60)*100)/100
 	text(temp, 0, 25, 100,100)
+
+
+	//Draw Mines Left
+	temp = "left: "+ (mineField.NumberOfMines-mineField.NumberCellsMarked)
+	text(temp, BoxSizeX-200, 25, 500, 100)
 }
+
 
 function InRegion(mousePos)
 {
