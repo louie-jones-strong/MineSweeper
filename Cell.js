@@ -19,6 +19,17 @@ class Cell
 
 		var psPos = createVector(this.Pos.x+this.Size.x/2, this.Pos.y+this.Size.y/2)
 		this.ParticleSystem = new ParticleSystem(psPos, this.Size)
+
+		this.NumberColours = {
+			1:color(0,0,255),
+			2:color(0,255,0),
+			3:color(255,0,0),
+			4:color(0,0,255),
+			5:color(255,255,255),
+			6:color(255,255,255),
+			7:color(255,255,255),
+			8:color(255,255,255),
+		}
 	}
 
 	SetState(state)
@@ -107,8 +118,13 @@ class Cell
 
 					if (this.MinesNear > 0)
 					{
+						var colour = color(255,255,255)
+						if (this.MinesNear in this.NumberColours)
+						{
+							colour = this.NumberColours[this.MinesNear]
+						}
 						stroke(0,0,0)
-						fill(255,255,255)
+						fill(colour)
 						strokeWeight(6)
 						this.TextToFitBox(this.MinesNear.toString())
 					}
@@ -135,6 +151,8 @@ class Cell
 		textSize(newSize)
 		var yOffset = (this.Size.y - newSize)/2
 		var xOffset = (this.Size.x - width)/2
+
+		yOffset += this.Size.y/10
 
 		text(string, this.Pos.x+xOffset, this.Pos.y+yOffset, this.Size.x, this.Size.y)
 	}

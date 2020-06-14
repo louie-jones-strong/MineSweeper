@@ -8,7 +8,7 @@ class Particle
 		this.Size = this.GetRandomFromRange(minSize, maxSize)
 		
 		this.Velocity = createVector(Math.random()*4-2, Math.random()*4-2)
-		this.Acceleration = this.GetRandomFromRange(0.9, 0.99)
+		this.Acceleration = this.GetRandomFromRange(0.95)
 
 		this.LifeTime = this.GetRandomFromRange(minLifeTime, maxLifeTime)
 		this.SetColour(255, 255, 255)
