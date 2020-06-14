@@ -20,6 +20,22 @@ class ParticleSystem
 		this.TimeSinceLastParticle = 0
 		this.TimeAlive = 0
 		this.Started = false
+
+		this.SetColour(255, 255, 255)
+		this.SetParticleSize(5, 10)
+	}
+
+	SetColour(red, green, blue)
+	{
+		this.ColourRed = red
+		this.ColourGreen = green
+		this.ColourBlue = blue
+	}
+
+	SetParticleSize(minSize, maxSize=null)
+	{
+		this.MinSize = minSize
+		this.MaxSize = maxSize
 	}
 
 	Play()
@@ -84,10 +100,14 @@ class ParticleSystem
 					pos.x += Math.floor(Math.random()*2)*this.EmitterSize.x
 					pos.y += Math.random()*this.EmitterSize.y
 				}
+				
+				pos.x -= this.EmitterSize.x/2
+				pos.y -= this.EmitterSize.y/2
 			}
 
 
-			var particle = new Particle(pos, 0.2, 1, 2, 6)
+			var particle = new Particle(pos, 0.2, 1, this.MinSize, this.MaxSize)
+			particle.SetColour(this.ColourRed, this.ColourGreen, this.ColourBlue)
 			this.Particles.push(particle)
 			this.TimeSinceLastParticle = 0
 		}

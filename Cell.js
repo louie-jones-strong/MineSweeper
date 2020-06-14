@@ -17,7 +17,8 @@ class Cell
 		this.SetState(eCellState.Normal)
 		this.MinesNear = 0
 
-		this.ParticleSystem = new ParticleSystem(this.Pos, 0.2, 50, eEmitterShape.Square, this.Size)
+		var psPos = createVector(this.Pos.x+this.Size.x/2, this.Pos.y+this.Size.y/2)
+		this.ParticleSystem = new ParticleSystem(psPos, 0.2, 50, eEmitterShape.Square, this.Size)
 	}
 
 	SetState(state)
@@ -28,6 +29,17 @@ class Cell
 			switch (state) 
 			{
 				case eCellState.Empty:
+					if (this.IsMine)
+					{
+						this.ParticleSystem.SetColour(255, 0, 0)
+						this.ParticleSystem.EmitterShape = eEmitterShape.Point
+					}
+					else
+					{
+						this.ParticleSystem.SetParticleSize(5,10)
+						this.ParticleSystem.EmitterShape = eEmitterShape.Square
+						this.ParticleSystem.SetColour(255, 150, 0)
+					}
 					this.ParticleSystem.Play()
 					break;
 			

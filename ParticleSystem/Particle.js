@@ -1,6 +1,6 @@
 class Particle
 {
-	constructor(pos, minLifeTime, maxLifeTime=null, minSize, maxSize=null)
+	constructor(pos, minLifeTime, maxLifeTime=null, minSize, maxSize)
 	{
 		this.TimeAlive = 0
 		this.Pos = createVector(pos.x, pos.y)
@@ -11,8 +11,14 @@ class Particle
 		this.Acceleration = this.GetRandomFromRange(0.9, 0.99)
 
 		this.LifeTime = this.GetRandomFromRange(minLifeTime, maxLifeTime)
-		
-		this.Color = color(0, 0, 0)
+		this.SetColour(255, 255, 255)
+	}
+
+	SetColour(red, green, blue)
+	{
+		this.ColourRed = red
+		this.ColourGreen = green
+		this.ColourBlue = blue
 	}
 
 	GetRandomFromRange(min, max)
@@ -46,7 +52,7 @@ class Particle
 		this.Pos.y += this.Velocity.y
 		
 
-		fill(255,150,0, 255-(this.TimeAlive/this.LifeTime)*255)
+		fill(this.ColourRed, this.ColourGreen, this.ColourBlue, 255-(this.TimeAlive/this.LifeTime)*255)
 		ellipse(this.Pos.x, this.Pos.y, this.Size, this.Size)
 	}
 }
