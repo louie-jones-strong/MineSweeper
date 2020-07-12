@@ -126,7 +126,7 @@ class Cell
 						stroke(0,0,0)
 						fill(colour)
 						strokeWeight(6)
-						this.TextToFitBox(this.MinesNear.toString())
+						TextToFitBox(this.MinesNear.toString(), this.Pos, this.Size)
 					}
 				}
 				break;
@@ -141,19 +141,5 @@ class Cell
 	DrawParticles()
 	{
 		this.ParticleSystem.Draw()
-	}
-
-	TextToFitBox(string)
-	{
-		textSize(this.Size.y)
-		var width = textWidth(string)
-		var newSize = min(this.Size.y, this.Size.y*(this.Size.x/width))
-		textSize(newSize)
-		var yOffset = (this.Size.y - newSize)/2
-		var xOffset = (this.Size.x - width)/2
-
-		yOffset += this.Size.y/10
-
-		text(string, this.Pos.x+xOffset, this.Pos.y+yOffset, this.Size.x, this.Size.y)
 	}
 }

@@ -63,6 +63,18 @@ function draw()
 	//Draw Mines Left
 	temp = "left: "+ (mineField.NumberOfMines-mineField.NumberCellsMarked)
 	text(temp, BoxSizeX-200, 25, 500, 100)
+
+	//Draw Gaem over Screen
+	if (mineField.Finished)
+	{
+
+		//play end animation
+
+		//show game over menu screen
+		rect(BoxSizeX*0.1, BoxSizeY*0.25, BoxSizeX*0.8, BoxSizeY*0.6)
+
+		text("Game Over!", BoxSizeX*0.30, BoxSizeY*0.26, BoxSizeX*0.5, 100)
+	}
 }
 
 
@@ -72,4 +84,18 @@ function InRegion(mousePos)
 		mousePos.x > 0 &&
 		mousePos.y < BoxSizeY &&
 		mousePos.y > 0
+}
+
+function TextToFitBox(string, pos, size)
+{
+	textSize(size.y)
+	var width = textWidth(string)
+	var newSize = min(size.y, size.y*(size.x/width))
+	textSize(newSize)
+	var yOffset = (size.y - newSize)/2
+	var xOffset = (size.x - width)/2
+
+	yOffset += size.y/10
+
+	text(string, pos.x+xOffset, pos.y+yOffset, size.x, size.y)
 }

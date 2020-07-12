@@ -17,6 +17,7 @@ class MineField
 		this.StopWatch = 0
 		this.NumInteractions = 0
 		this.InputBlocked = false
+		this.Finished = false
 		this.NumberCellsMarked = 0
 
 		var cellSize = createVector(this.Size.x/this.CellCountX, this.Size.y/this.CellCountY)
@@ -122,7 +123,7 @@ class MineField
 	{
 		if (this.InputBlocked)
 		{
-			return false
+			return
 		}
 
 		touchX = int((mousePos.x-this.Pos.x) / (this.Size.x/this.CellCountX))
@@ -157,8 +158,9 @@ class MineField
 			{
 				cell.SetState(eCellState.Empty)
 				this.InputBlocked = true
+				this.Finished = true
 				//game is now over
-				return true
+				return
 			}
 			else
 			{
@@ -168,11 +170,12 @@ class MineField
 				if (this.CheckFinshed())
 				{
 					this.InputBlocked = true
-					return true
+					this.Finished = true
+					return
 				}
 			}
 		}
-		return false
+		return
 	}
 
 	RevealCell(cell)
