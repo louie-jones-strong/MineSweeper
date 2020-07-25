@@ -67,21 +67,24 @@ function draw()
 	text(temp, BoxSizeX-200, 25, 500, 100)
 
 	//Draw Game over Screen
-	if (mineField.Finished)
+	if (mineField.State == eFieldState.Menu ||
+		((mineField.State == eFieldState.Won ||
+		mineField.State == eFieldState.Lose) &&
+		mineField.TimeInState >= 2))
 	{
 		//play end animation
-		DrawGameOverScreen(mousePos, clicked && mouseButton == LEFT)
+		DrawMenuScreen(mousePos, clicked && mouseButton == LEFT)
 	}
 }
 
-function DrawGameOverScreen(mousePos, leftClicked)
+function DrawMenuScreen(mousePos, leftClicked)
 {
 		//show game over menu screen
 		rect(BoxSizeX*0.1, BoxSizeY*0.25, BoxSizeX*0.8, BoxSizeY*0.6)
 
 		fill(0,0,0)
 
-		text("Game Over!", BoxSizeX*0.30, BoxSizeY*0.26, BoxSizeX*0.5, 100)
+		text("Main Menu", BoxSizeX*0.30, BoxSizeY*0.26, BoxSizeX*0.5, 100)
 
 		Button("Start New", 
 			createVector(BoxSizeX*0.35, BoxSizeY*0.73),

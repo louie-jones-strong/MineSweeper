@@ -1,3 +1,12 @@
+const eFieldState = {
+	Menu: 1,
+	WaitingForStart: 2,
+	Playing: 4,
+	Won: 8,
+	Lose: 16,
+	All: 31
+}
+
 class MineField
 {
 	constructor(pos, size)
@@ -10,6 +19,16 @@ class MineField
 		this.NumberOfMines = 10
 
 		this.MakeField()
+		this.SetState(eFieldState.Menu)
+	}
+
+	SetState(state)
+	{
+		if (this.State != state)
+		{
+			this.State = state
+			this.TimeInState = 0
+		}
 	}
 
 	MakeField()
@@ -17,7 +36,7 @@ class MineField
 		this.StopWatch = 0
 		this.NumInteractions = 0
 		this.InputBlocked = false
-		this.Finished = false
+		this.SetState(eFieldState.WaitingForStart)
 		this.NumberCellsMarked = 0
 
 		var cellSize = createVector(this.Size.x/this.CellCountX, this.Size.y/this.CellCountY)
@@ -51,7 +70,7 @@ class MineField
 		}
 	}
 
-	CheckFinshed()
+	CheckFinished()
 	{
 		for (let y = 0; y < this.CellCountY; y++)
 		{
@@ -101,6 +120,7 @@ class MineField
 		{
 			this.StopWatch += deltaTime
 		}
+		this.TimeInState += deltaTime
 
 		this.Grid.forEach(y => 
 		{
@@ -158,7 +178,7 @@ class MineField
 			{
 				cell.SetState(eCellState.Empty)
 				this.InputBlocked = true
-				this.Finished = true
+				this.SetState(eFieldState.Lose)
 				//game is now over
 				return
 			}
@@ -167,10 +187,10 @@ class MineField
 				this.RevealCell(cell)
 				// need to reveal area around it
 
-				if (this.CheckFinshed())
+				if (this.CheckFinished())
 				{
 					this.InputBlocked = true
-					this.Finished = true
+					this.SetState(eFieldState.Won)
 					return
 				}
 			}
