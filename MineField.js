@@ -35,7 +35,6 @@ class MineField
 	{
 		this.StopWatch = 0
 		this.NumInteractions = 0
-		this.InputBlocked = false
 		this.SetState(eFieldState.WaitingForStart)
 		this.NumberCellsMarked = 0
 
@@ -116,7 +115,9 @@ class MineField
 
 	Draw(deltaTime)
 	{
-		if (!this.InputBlocked && this.NumInteractions > 0)
+		if ((this.State == eFieldState.WaitingForStart ||
+			this.State == eFieldState.Playing) &&
+			this.NumInteractions > 0)
 		{
 			this.StopWatch += deltaTime
 		}
@@ -141,7 +142,8 @@ class MineField
 
 	TouchEvent(mousePos, isRight)
 	{
-		if (this.InputBlocked)
+		if (this.State != eFieldState.WaitingForStart &&
+			this.State != eFieldState.Playing)
 		{
 			return
 		}
@@ -177,7 +179,6 @@ class MineField
 			if (cell.IsMine)
 			{
 				cell.SetState(eCellState.Empty)
-				this.InputBlocked = true
 				this.SetState(eFieldState.Lose)
 				//game is now over
 				return
@@ -189,7 +190,6 @@ class MineField
 
 				if (this.CheckFinished())
 				{
-					this.InputBlocked = true
 					this.SetState(eFieldState.Won)
 					return
 				}

@@ -21,6 +21,7 @@ function setup()
 	createCanvas(BoxSizeX, BoxSizeY);
 	strokeWeight(4);
 	mineField = new MineField(createVector(0, 100), createVector(750,750))
+	SetNumberOfMines(0)
 	LastFramePressed = false
 	LastFrameTime = millis()
 }
@@ -38,7 +39,6 @@ function draw()
 	clicked =mouseIsPressed && !LastFramePressed &&
 			(mouseButton == LEFT ||
 			mouseButton == RIGHT)
-	LastFramePressed = mouseIsPressed
 
 	if (clicked &&
 		InRegion(mousePos))
@@ -74,11 +74,12 @@ function draw()
 		mineField.TimeInState >= 2))
 	{
 		//play end animation
-		DrawMenuScreen(mousePos, clicked && mouseButton == LEFT)
+		DrawMenuScreen(mousePos, mouseIsPressed, LastFramePressed, mouseButton == LEFT)
 	}
+	LastFramePressed = mouseIsPressed
 }
 
-function DrawMenuScreen(mousePos, leftClicked)
+function DrawMenuScreen(mousePos, mouseIsPressed, lastFramePressed, isLeft)
 {
 		//show game over menu screen
 		rect(BoxSizeX*0.1, BoxSizeY*0.25, BoxSizeX*0.8, BoxSizeY*0.6)
@@ -87,11 +88,27 @@ function DrawMenuScreen(mousePos, leftClicked)
 
 		text("Main Menu", BoxSizeX*0.30, BoxSizeY*0.26, BoxSizeX*0.5, 100)
 
+		Slider("Mines", 
+			createVector(BoxSizeX*0.2, BoxSizeY*0.4),
+			createVector(BoxSizeX*0.6, BoxSizeY*0.1),
+			mousePos, 
+			mouseIsPressed && isLeft,
+			SetNumberOfMines,
+			GetNumberOfMines())
+
+		Slider("Size", 
+			createVector(BoxSizeX*0.2, BoxSizeY*0.6),
+			createVector(BoxSizeX*0.6, BoxSizeY*0.1),
+			mousePos, 
+			mouseIsPressed && isLeft,
+			SetSizeOfMap,
+			GetSizeOfMap())
+
 		Button("Start New", 
 			createVector(BoxSizeX*0.35, BoxSizeY*0.73),
 			createVector(BoxSizeX*0.3, BoxSizeY*0.1),
 			mousePos, 
-			leftClicked,
+			mouseIsPressed && !lastFramePressed && isLeft,
 			StartNew)
 }
 
@@ -100,6 +117,29 @@ function StartNew()
 	mineField.MakeField()
 }
 
+function SetNumberOfMines(value)
+{
+	mineField.NumberOfMines = 10 + round(value * 10)
+	console.log("set number Of mines: "+mineField.NumberOfMines + " value: "+value)
+}
+function GetNumberOfMines()
+{
+	value = (mineField.NumberOfMines - 10) / 10
+	return value
+}
+
+function SetSizeOfMap(value)
+{
+	size = 10 + round(value * 10)
+	mineField.CellCountY = size
+	mineField.CellCountX = size
+	console.log("set Size: " + size + " value: "+value)
+}
+function GetSizeOfMap()
+{
+	value = (mineField.CellCountY - 10) / 10
+	return value
+}
 
 function InRegion(mousePos)
 {
@@ -145,4 +185,34 @@ function Button(label, pos, size, mousePos, leftClicked, action)
 		
 		action()
 	}
+}
+
+function Slider(label, pos, size, mousePos, mouseDown, 
+		setAction, value)
+{
+	center = createVector(pos.x + size.x/6, pos.y)
+	TextToFitBox(label, center, size/3)
+
+	sliderPos = createVector(pos.x + size.x/3, pos.y)
+	sliderSize = createVector(size.x * 2/3, size.y)
+	fill(150, 150, 150)
+	noStroke()
+	rect(sliderPos.x, pos.y + size.y/2 - 2, sliderSize.x, 4)
+
+	fill(0,0,0)
+	valuePoint = createVector(sliderPos.x + sliderSize.x*value, pos.y + size.y/2)
+	ellipse(valuePoint.x, valuePoint.y, 15, 15)
+
+
+	if (mouseDown &&
+		mousePos.x >= sliderPos.x &&
+		mousePos.x <= sliderPos.x + sliderSize.x &&
+		mousePos.y >= sliderPos.y &&
+		mousePos.y <= sliderPos.y + sliderSize.y)
+	{
+		newValue = (mousePos.x - sliderPos.x) / sliderSize.x
+		
+		setAction(newValue)
+	}
+	stroke(2)
 }
