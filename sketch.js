@@ -34,14 +34,16 @@ function draw()
 
 	mousePos = createVector(mouseX, mouseY)
 
-	if (mouseIsPressed && !LastFramePressed &&
-		(mouseButton == LEFT ||
-		mouseButton == RIGHT) &&
+	clicked =mouseIsPressed && !LastFramePressed &&
+			(mouseButton == LEFT ||
+			mouseButton == RIGHT)
+	LastFramePressed = mouseIsPressed
+
+	if (clicked &&
 		InRegion(mousePos))
 	{
 		mineField.TouchEvent(mousePos, mouseButton == RIGHT)
 	}
-	LastFramePressed = mouseIsPressed
 
 	mineField.Draw(deltaTime)
 
@@ -64,17 +66,34 @@ function draw()
 	temp = "left: "+ (mineField.NumberOfMines-mineField.NumberCellsMarked)
 	text(temp, BoxSizeX-200, 25, 500, 100)
 
-	//Draw Gaem over Screen
+	//Draw Game over Screen
 	if (mineField.Finished)
 	{
-
 		//play end animation
+		DrawGameOverScreen(mousePos, clicked && mouseButton == LEFT)
+	}
+}
 
+function DrawGameOverScreen(mousePos, leftClicked)
+{
 		//show game over menu screen
 		rect(BoxSizeX*0.1, BoxSizeY*0.25, BoxSizeX*0.8, BoxSizeY*0.6)
 
+		fill(0,0,0)
+
 		text("Game Over!", BoxSizeX*0.30, BoxSizeY*0.26, BoxSizeX*0.5, 100)
-	}
+
+		Button("Start New", 
+			createVector(BoxSizeX*0.35, BoxSizeY*0.73),
+			createVector(BoxSizeX*0.3, BoxSizeY*0.1),
+			mousePos, 
+			leftClicked,
+			StartNew)
+}
+
+function StartNew()
+{
+	mineField.MakeField()
 }
 
 
@@ -86,7 +105,7 @@ function InRegion(mousePos)
 		mousePos.y > 0
 }
 
-function TextToFitBox(string, pos, size)
+function TextToFitBox(string, center, size)
 {
 	textSize(size.y)
 	var width = textWidth(string)
@@ -97,5 +116,29 @@ function TextToFitBox(string, pos, size)
 
 	yOffset += size.y/10
 
-	text(string, pos.x+xOffset, pos.y+yOffset, size.x, size.y)
+	text(string, center.x+xOffset, center.y+yOffset, size.x, size.y)
+}
+
+function Button(label, pos, size, mousePos, leftClicked, action)
+{
+	strokeWeight(3)
+	fill(255,255,255)
+
+	rect(pos.x, pos.y, size.x, size.y)
+
+	center = createVector(pos.x + size.x/2, pos.y)
+
+	fill(0,0,0)
+	TextToFitBox(label, center, size)
+
+	if (leftClicked &&
+		mousePos.x >= pos.x &&
+		mousePos.x <= pos.x + size.x &&
+		mousePos.y >= pos.y &&
+		mousePos.y <= pos.y + size.y)
+	{
+		console.log("Triggered('"+label+"')");
+		
+		action()
+	}
 }

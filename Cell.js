@@ -21,14 +21,14 @@ class Cell
 		this.ParticleSystem = new ParticleSystem(psPos, this.Size)
 
 		this.NumberColours = {
-			1:color(0,0,255),
-			2:color(0,255,0),
-			3:color(255,0,0),
-			4:color(0,0,255),
-			5:color(255,255,255),
-			6:color(255,255,255),
-			7:color(255,255,255),
-			8:color(255,255,255),
+			1: color(0,0,255),
+			2: color(0,255,0),
+			3: color(255,0,0),
+			4: color(0,0,255),
+			5: color(255,255,255),
+			6: color(255,255,255),
+			7: color(255,255,255),
+			8: color(255,255,255),
 		}
 	}
 
