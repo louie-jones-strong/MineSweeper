@@ -1,6 +1,7 @@
 function preload()
 {
 	CellNormalImage = loadImage('Assets/Images/CellNormal.png');
+	CellEmptyImage = loadImage('Assets/Images/Empty.png');
 	CellFlaggedImage = loadImage('Assets/Images/CellFlagged.png');
 	CellQuestionMarkImage = loadImage('Assets/Images/CellQuestionMark.png');
 }

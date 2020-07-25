@@ -104,6 +104,7 @@ class Cell
 				break;
 
 			case eCellState.Empty:
+				image(CellEmptyImage, this.Pos.x, this.Pos.y, this.Size.x, this.Size.y);
 				if (this.IsMine)
 				{
 					fill(255,0,0)
