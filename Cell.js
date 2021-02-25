@@ -127,7 +127,9 @@ class Cell
 						stroke(0,0,0)
 						fill(colour)
 						strokeWeight(6)
-						TextToFitBox(this.MinesNear.toString(), this.Pos, this.Size)
+
+						var textPos = createVector(this.Pos.x+this.Size.x/2, this.Pos.y)
+						TextToFitBox(this.MinesNear.toString(), textPos, this.Size)
 					}
 				}
 				break;

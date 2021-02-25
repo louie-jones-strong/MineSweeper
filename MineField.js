@@ -147,10 +147,20 @@ class MineField
 		{
 			return
 		}
+		var posX = mousePos.x-this.Pos.x
+		var posY = mousePos.y-this.Pos.y
 
-		touchX = int((mousePos.x-this.Pos.x) / (this.Size.x/this.CellCountX))
-		touchY = int((mousePos.y-this.Pos.y) / (this.Size.y/this.CellCountY))
+		if (posX < 0 || posY < 0 ||
+			posX > (this.Size.x) ||
+			posY > (this.Size.y))
+		{
+			return;
+		}
 
+		touchX = int(posX / (this.Size.x/this.CellCountX))
+		touchY = int(posY / (this.Size.y/this.CellCountY))
+
+		console.log(touchX, touchY);
 		var cell = this.Grid[touchY][touchX]
 
 		if (isRight)

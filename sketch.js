@@ -1,3 +1,7 @@
+var Clicked;
+var RightClick;
+var IsTouchScreen;
+
 function preload()
 {
 	CellNormalImage = loadImage('Assets/Images/CellNormal.png');
@@ -17,13 +21,15 @@ function setup()
 	});
 
 	BoxSizeX = 750
-	BoxSizeY = 850
+	BoxSizeY = 950
 	createCanvas(BoxSizeX, BoxSizeY);
 	strokeWeight(4);
 	mineField = new MineField(createVector(0, 100), createVector(750,750))
 	SetNumberOfMines(0)
-	LastFramePressed = false
 	LastFrameTime = millis()
+
+	IsTouchScreen = false;
+	RightClick = false;
 }
 
 
@@ -36,14 +42,12 @@ function draw()
 
 	mousePos = createVector(mouseX, mouseY)
 
-	clicked =mouseIsPressed && !LastFramePressed &&
-			(mouseButton == LEFT ||
-			mouseButton == RIGHT)
-
-	if (clicked &&
-		InRegion(mousePos))
+	if (Clicked && InRegion(mousePos) &&
+		(mineField.State == eFieldState.Playing ||
+		mineField.State == eFieldState.WaitingForStart)&&
+		mineField.TimeInState >= 0.2)
 	{
-		mineField.TouchEvent(mousePos, mouseButton == RIGHT)
+		mineField.TouchEvent(mousePos, RightClick)
 	}
 
 	mineField.Draw(deltaTime)
@@ -57,15 +61,15 @@ function draw()
 	temp = ""
 	if (Math.floor(mineField.StopWatch / 60) > 0)
 	{
-		temp = Math.floor(mineField.StopWatch / 60)+":"
+		temp = Math.floor(mineField.StopWatch / 60) + ":"
 	}
-	temp += round((mineField.StopWatch % 60)*100)/100
-	text(temp, 0, 25, 100,100)
+	temp += round( (mineField.StopWatch % 60) * 100) / 100
+	text(temp, 0, 25, 100, 100)
 
 
 	//Draw Mines Left
-	temp = "left: "+ (mineField.NumberOfMines-mineField.NumberCellsMarked)
-	text(temp, BoxSizeX-200, 25, 500, 100)
+	temp = "left: " + (mineField.NumberOfMines - mineField.NumberCellsMarked)
+	text(temp, BoxSizeX - 200, 25, 500, 100)
 
 	//Draw Game over Screen
 	if (mineField.State == eFieldState.Menu ||
@@ -74,12 +78,69 @@ function draw()
 		mineField.TimeInState >= 2))
 	{
 		//play end animation
-		DrawMenuScreen(mousePos, mouseIsPressed, LastFramePressed, mouseButton == LEFT)
+		DrawMenuScreen(mousePos, Clicked, !RightClick)
 	}
-	LastFramePressed = mouseIsPressed
+
+	if (IsTouchScreen)
+	{
+		Button("Dig", 
+			createVector(BoxSizeX*0, BoxSizeY-100),
+			createVector(BoxSizeX*0.5, 100),
+			mousePos, 
+			Clicked,
+			SetModeAsDig,
+			!RightClick)
+		
+		Button("Flag", 
+			createVector(BoxSizeX*0.5, BoxSizeY-100),
+			createVector(BoxSizeX*0.5, 100),
+			mousePos, 
+			Clicked,
+			SetModeAsMark,
+			RightClick)
+	}
+
+	Clicked = false;
 }
 
-function DrawMenuScreen(mousePos, mouseIsPressed, lastFramePressed, isLeft)
+function touchEnded()
+{
+	Clicked = true;
+	IsTouchScreen = true;
+}
+
+function mouseReleased()
+{
+	if (IsTouchScreen)
+	{
+		return;
+	}
+
+	if (mouseButton == LEFT)
+	{
+		SetModeAsDig()
+	}
+	else if (mouseButton == RIGHT)
+	{
+		SetModeAsMark()
+	}
+
+	Clicked = true;
+}
+
+function SetModeAsDig()
+{
+	console.log("Set as dig mode");
+	RightClick = false;
+}
+
+function SetModeAsMark()
+{
+	console.log("Set as mark mode");
+	RightClick = true;
+}
+
+function DrawMenuScreen(mousePos, pressed, isLeft)
 {
 		//show game over menu screen
 		rect(BoxSizeX*0.1, BoxSizeY*0.25, BoxSizeX*0.8, BoxSizeY*0.6)
@@ -92,7 +153,7 @@ function DrawMenuScreen(mousePos, mouseIsPressed, lastFramePressed, isLeft)
 			createVector(BoxSizeX*0.2, BoxSizeY*0.4),
 			createVector(BoxSizeX*0.6, BoxSizeY*0.1),
 			mousePos, 
-			mouseIsPressed && isLeft,
+			pressed && isLeft,
 			SetNumberOfMines,
 			GetNumberOfMines())
 
@@ -100,7 +161,7 @@ function DrawMenuScreen(mousePos, mouseIsPressed, lastFramePressed, isLeft)
 			createVector(BoxSizeX*0.2, BoxSizeY*0.6),
 			createVector(BoxSizeX*0.6, BoxSizeY*0.1),
 			mousePos, 
-			mouseIsPressed && isLeft,
+			pressed && isLeft,
 			SetSizeOfMap,
 			GetSizeOfMap())
 
@@ -108,7 +169,7 @@ function DrawMenuScreen(mousePos, mouseIsPressed, lastFramePressed, isLeft)
 			createVector(BoxSizeX*0.35, BoxSizeY*0.73),
 			createVector(BoxSizeX*0.3, BoxSizeY*0.1),
 			mousePos, 
-			mouseIsPressed && !lastFramePressed && isLeft,
+			pressed && isLeft,
 			StartNew)
 }
 
@@ -120,7 +181,6 @@ function StartNew()
 function SetNumberOfMines(value)
 {
 	mineField.NumberOfMines = 10 + round(value * 10)
-	console.log("set number Of mines: "+mineField.NumberOfMines + " value: "+value)
 }
 function GetNumberOfMines()
 {
@@ -133,7 +193,6 @@ function SetSizeOfMap(value)
 	size = 10 + round(value * 10)
 	mineField.CellCountY = size
 	mineField.CellCountX = size
-	console.log("set Size: " + size + " value: "+value)
 }
 function GetSizeOfMap()
 {
@@ -151,22 +210,30 @@ function InRegion(mousePos)
 
 function TextToFitBox(string, center, size)
 {
+	textAlign(CENTER);
 	textSize(size.y)
 	var width = textWidth(string)
 	var newSize = min(size.y, size.y*(size.x/width))
 	textSize(newSize)
 	var yOffset = (size.y - newSize)/2
-	var xOffset = (size.x - width)/2
 
 	yOffset += size.y/10
 
-	text(string, center.x+xOffset, center.y+yOffset, size.x, size.y)
+	text(string, center.x-size.x/2, center.y+yOffset, size.x, size.y)
 }
 
-function Button(label, pos, size, mousePos, leftClicked, action)
+function Button(label, pos, size, mousePos, leftClicked, action, active)
 {
 	strokeWeight(3)
-	fill(255,255,255)
+
+	if (active)
+	{
+		fill(100,255,100)
+	}
+	else
+	{
+		fill(255,255,255)
+	}
 
 	rect(pos.x, pos.y, size.x, size.y)
 
@@ -182,7 +249,6 @@ function Button(label, pos, size, mousePos, leftClicked, action)
 		mousePos.y <= pos.y + size.y)
 	{
 		console.log("Triggered('"+label+"')");
-		
 		action()
 	}
 }
