@@ -55,6 +55,7 @@ function draw()
 	fill(255,255,255)
 	stroke(0,0,0)
 	strokeWeight(2)
+	textAlign(LEFT);
 	textSize(50);
 
 	//Draw timer
