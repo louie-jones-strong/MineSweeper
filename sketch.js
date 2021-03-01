@@ -84,18 +84,18 @@ function draw()
 
 	if (IsTouchScreen)
 	{
-		Button("Dig", 
+		Button("Dig",
 			createVector(BoxSizeX*0, BoxSizeY-100),
 			createVector(BoxSizeX*0.5, 100),
-			mousePos, 
+			mousePos,
 			Clicked,
 			SetModeAsDig,
 			!RightClick)
-		
-		Button("Flag", 
+
+		Button("Flag",
 			createVector(BoxSizeX*0.5, BoxSizeY-100),
 			createVector(BoxSizeX*0.5, 100),
-			mousePos, 
+			mousePos,
 			Clicked,
 			SetModeAsMark,
 			RightClick)
@@ -150,26 +150,26 @@ function DrawMenuScreen(mousePos, pressed, isLeft)
 
 		text("Main Menu", BoxSizeX*0.30, BoxSizeY*0.26, BoxSizeX*0.5, 100)
 
-		Slider("Mines", 
+		Slider("Mines:",
 			createVector(BoxSizeX*0.2, BoxSizeY*0.4),
 			createVector(BoxSizeX*0.6, BoxSizeY*0.1),
-			mousePos, 
+			mousePos,
 			pressed && isLeft,
 			SetNumberOfMines,
 			GetNumberOfMines())
 
-		Slider("Size", 
+		Slider("Size:",
 			createVector(BoxSizeX*0.2, BoxSizeY*0.6),
 			createVector(BoxSizeX*0.6, BoxSizeY*0.1),
-			mousePos, 
+			mousePos,
 			pressed && isLeft,
 			SetSizeOfMap,
 			GetSizeOfMap())
 
-		Button("Start New", 
+		Button("Start New",
 			createVector(BoxSizeX*0.35, BoxSizeY*0.73),
 			createVector(BoxSizeX*0.3, BoxSizeY*0.1),
-			mousePos, 
+			mousePos,
 			pressed && isLeft,
 			StartNew)
 }
@@ -254,11 +254,13 @@ function Button(label, pos, size, mousePos, leftClicked, action, active)
 	}
 }
 
-function Slider(label, pos, size, mousePos, mouseDown, 
+function Slider(label, pos, size, mousePos, mouseDown,
 		setAction, value)
 {
 	center = createVector(pos.x + size.x/6, pos.y)
-	TextToFitBox(label, center, size/3)
+	textSize.x = size.x/3
+	textSize.y = size.y
+	TextToFitBox(label, center, textSize)
 
 	sliderPos = createVector(pos.x + size.x/3, pos.y)
 	sliderSize = createVector(size.x * 2/3, size.y)
@@ -278,7 +280,7 @@ function Slider(label, pos, size, mousePos, mouseDown,
 		mousePos.y <= sliderPos.y + sliderSize.y)
 	{
 		newValue = (mousePos.x - sliderPos.x) / sliderSize.x
-		
+
 		setAction(newValue)
 	}
 	stroke(2)
