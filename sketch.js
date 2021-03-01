@@ -68,7 +68,7 @@ function draw()
 	temp += round( (mineField.StopWatch % 60) * 100) / 100
 	text(temp, 0, 25, 100, 100)
 
-
+	fill(255)
 	//Draw Mines Left
 	temp = "left: " + (mineField.NumberOfMines - mineField.NumberCellsMarked)
 	text(temp, BoxSizeX - 200, 25, 500, 100)
@@ -81,6 +81,15 @@ function draw()
 	{
 		//play end animation
 		DrawMenuScreen(mousePos, Clicked, !RightClick)
+	}
+	else
+	{
+		Button("Menu",
+			createVector(BoxSizeX*0.5-100, 25),
+			createVector(200, 50),
+			mousePos,
+			Clicked,
+			ToMenu)
 	}
 
 	if (IsTouchScreen)
@@ -178,6 +187,11 @@ function DrawMenuScreen(mousePos, pressed, isLeft)
 function StartNew()
 {
 	mineField.MakeField()
+}
+
+function ToMenu()
+{
+	mineField.SetState(eFieldState.Menu)
 }
 
 function SetNumberOfMines(value)
