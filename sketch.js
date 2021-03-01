@@ -8,6 +8,7 @@ function preload()
 	CellEmptyImage = loadImage('Assets/Images/Empty.png');
 	CellFlaggedImage = loadImage('Assets/Images/CellFlagged.png');
 	CellQuestionMarkImage = loadImage('Assets/Images/CellQuestionMark.png');
+	MineImage = loadImage('Assets/Images/Mine.png');
 }
 
 function setup()
