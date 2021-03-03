@@ -20,6 +20,10 @@ class MineField
 
 		this.MakeField()
 		this.SetState(eFieldState.Menu)
+
+		this.LastClickedCellX = 0
+		this.LastClickedCellY = 0
+		this.LastClickTime = millis()
 	}
 
 	SetState(state)
@@ -55,7 +59,7 @@ class MineField
 
 
 
-		
+
 		for (let mineNum = 0; mineNum < this.NumberOfMines; mineNum++)
 		{
 			var pickedItem = itemsToPickFrom[Math.floor(Math.random() * itemsToPickFrom.length)];
@@ -76,7 +80,7 @@ class MineField
 			for (let x = 0; x < this.CellCountX; x++)
 			{
 				var cell = this.Grid[x][y]
-				
+
 				if (!cell.IsMine && cell.State != eCellState.Empty)
 				{
 					return false
@@ -86,23 +90,40 @@ class MineField
 		return true
 	}
 
+	UpdateCellMarked(cell, marked)
+	{
+		var nearCells = this.GetAllowedNearCells(cell, eCellState.All)
+
+		nearCells.forEach(nearCell => {
+			if(marked)
+			{
+				nearCell.MarkedNear += 1
+			}
+			else
+			{
+				nearCell.MarkedNear -= 1
+			}
+		});
+	}
+
 	GetAllowedNearCells(cell, stateFiliter=eCellState.Normal)
 	{
 		var x = cell.GridPos.x
 		var y = cell.GridPos.y
 
 		var cellList = []
-		for (let xOffSet = -1; xOffSet <= 1; xOffSet++) 
+		for (let xOffSet = -1; xOffSet <= 1; xOffSet++)
 		{
 			if (x+xOffSet >= 0 && x+xOffSet < this.CellCountX)
 			{
-				for (let yOffSet = -1; yOffSet <= 1; yOffSet ++) 
+				for (let yOffSet = -1; yOffSet <= 1; yOffSet ++)
 				{
 					if (y+yOffSet >= 0 && y+yOffSet < this.CellCountY &&
 						!(yOffSet == 0 && xOffSet == 0))
 					{
 						var subCell = this.Grid[y+yOffSet][x+xOffSet]
-						if (subCell.State & stateFiliter == subCell.State)
+
+						if ((subCell.State & stateFiliter) == subCell.State)
 						{
 							cellList.push(subCell)
 						}
@@ -123,17 +144,17 @@ class MineField
 		}
 		this.TimeInState += deltaTime
 
-		this.Grid.forEach(y => 
+		this.Grid.forEach(y =>
 		{
-			y.forEach(cell => 
+			y.forEach(cell =>
 			{
 				cell.Draw()
 			});
 		});
 
-		this.Grid.forEach(y => 
+		this.Grid.forEach(y =>
 		{
-			y.forEach(cell => 
+			y.forEach(cell =>
 			{
 				cell.DrawParticles()
 			});
@@ -157,25 +178,26 @@ class MineField
 			return;
 		}
 
-		touchX = int(posX / (this.Size.x/this.CellCountX))
-		touchY = int(posY / (this.Size.y/this.CellCountY))
+		var cellX = int(posX / (this.Size.x/this.CellCountX))
+		var cellY = int(posY / (this.Size.y/this.CellCountY))
 
-		console.log(touchX, touchY);
-		var cell = this.Grid[touchY][touchX]
+		var cell = this.Grid[cellY][cellX]
 
 		if (isRight)
 		{
 			this.NumInteractions += 1
-			switch (cell.State) 
+			switch (cell.State)
 			{
 				case eCellState.Normal:
 					this.NumberCellsMarked += 1
 					cell.SetState(eCellState.Flagged)
+					this.UpdateCellMarked(cell, true)
 					break;
 
 				case eCellState.Flagged:
 					this.NumberCellsMarked -= 1
 					cell.SetState(eCellState.QuestionMark)
+					this.UpdateCellMarked(cell, false)
 					break;
 
 				case eCellState.QuestionMark:
@@ -186,37 +208,46 @@ class MineField
 		else if (cell.State != eCellState.Flagged && cell.State != eCellState.QuestionMark)
 		{
 			this.NumInteractions += 1
-			if (cell.IsMine)
+
+			var doubleClick = this.LastClickedCellX == cellX &&
+							this.LastClickedCellY == cellY &&
+							(millis() - this.LastClickTime) < 200
+
+			this.RevealCell(cell, doubleClick)
+			// need to reveal area around it
+
+			if (this.CheckFinished())
 			{
-				cell.SetState(eCellState.Empty)
-				this.SetState(eFieldState.Lose)
-				//game is now over
+				this.SetState(eFieldState.Won)
 				return
 			}
-			else
-			{
-				this.RevealCell(cell)
-				// need to reveal area around it
 
-				if (this.CheckFinished())
-				{
-					this.SetState(eFieldState.Won)
-					return
-				}
-			}
+			this.LastClickedCellX = cellX
+			this.LastClickedCellY = cellY
+			this.LastClickTime = millis()
 		}
 		return
 	}
 
-	RevealCell(cell)
+	RevealCell(cell, doubleClick)
 	{
-		if (!cell.IsMine)
+		cell.SetState(eCellState.Empty)
+		if (cell.IsMine)
 		{
-			cell.SetState(eCellState.Empty)
-			if (cell.MinesNear == 0)
+			this.SetState(eFieldState.Lose)
+			//game is now over
+			return
+		}
+		else
+		{
+			console.log(cell.MarkedNear, cell.MinesNear);
+
+			if (cell.MinesNear == 0 ||
+				(doubleClick &&
+				cell.MarkedNear >= cell.MinesNear))
 			{
 				this.GetAllowedNearCells(cell, eCellState.Normal).forEach(nearCell => {
-					this.RevealCell(nearCell)
+					this.RevealCell(nearCell, false)
 				});
 			}
 		}

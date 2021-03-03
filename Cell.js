@@ -16,6 +16,7 @@ class Cell
 		this.IsMine = false
 		this.SetState(eCellState.Normal)
 		this.MinesNear = 0
+		this.MarkedNear = 0
 
 		var psPos = createVector(this.Pos.x+this.Size.x/2, this.Pos.y+this.Size.y/2)
 		this.ParticleSystem = new ParticleSystem(psPos, this.Size)

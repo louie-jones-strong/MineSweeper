@@ -1,6 +1,13 @@
-var Clicked;
-var RightClick;
+const eClickState = {
+	None: 1,
+	Pressed: 2,
+	Held: 4,
+	Released: 8,
+}
+
 var IsTouchScreen;
+var LeftClickState;
+var RightClickState;
 
 function preload()
 {
@@ -33,7 +40,6 @@ function setup()
 	RightClick = false;
 }
 
-
 function draw()
 {
 	background(100);
@@ -43,12 +49,14 @@ function draw()
 
 	mousePos = createVector(mouseX, mouseY)
 
-	if (Clicked && InRegion(mousePos) &&
+	if ((LeftClickState == eClickState.Pressed ||
+		RightClickState == eClickState.Pressed) &&
+		 InRegion(mousePos) &&
 		(mineField.State == eFieldState.Playing ||
 		mineField.State == eFieldState.WaitingForStart)&&
 		mineField.TimeInState >= 0.2)
 	{
-		mineField.TouchEvent(mousePos, RightClick)
+		mineField.TouchEvent(mousePos, RightClick || RightClickState == eClickState.Pressed)
 	}
 
 	mineField.Draw(deltaTime)
@@ -80,7 +88,8 @@ function draw()
 		mineField.TimeInState >= 2))
 	{
 		//play end animation
-		DrawMenuScreen(mousePos, Clicked, !RightClick)
+		DrawMenuScreen(mousePos, (LeftClickState == eClickState.Held ||
+			RightClickState == eClickState.Held), !RightClick)
 	}
 	else
 	{
@@ -88,7 +97,8 @@ function draw()
 			createVector(BoxSizeX*0.5-100, 25),
 			createVector(200, 50),
 			mousePos,
-			Clicked,
+			(LeftClickState == eClickState.Pressed ||
+				RightClickState == eClickState.Pressed),
 			ToMenu)
 	}
 
@@ -98,7 +108,8 @@ function draw()
 			createVector(BoxSizeX*0, BoxSizeY-100),
 			createVector(BoxSizeX*0.5, 100),
 			mousePos,
-			Clicked,
+			(LeftClickState == eClickState.Pressed ||
+				RightClickState == eClickState.Pressed),
 			SetModeAsDig,
 			!RightClick)
 
@@ -106,18 +117,77 @@ function draw()
 			createVector(BoxSizeX*0.5, BoxSizeY-100),
 			createVector(BoxSizeX*0.5, 100),
 			mousePos,
-			Clicked,
+			(LeftClickState == eClickState.Pressed ||
+				RightClickState == eClickState.Pressed),
 			SetModeAsMark,
 			RightClick)
 	}
 
-	Clicked = false;
+	if (LeftClickState == eClickState.Pressed)
+	{
+		LeftClickState = eClickState.Held
+	}
+	if (LeftClickState == eClickState.Released)
+	{
+		LeftClickState = eClickState.None
+	}
+
+	if (RightClickState == eClickState.Pressed)
+	{
+		RightClickState = eClickState.Held
+	}
+	if (RightClickState == eClickState.Released)
+	{
+		RightClickState = eClickState.None
+	}
+}
+
+
+//#region Click and touch functions
+
+function touchStarted()
+{
+	IsTouchScreen = true;
+
+	if (!RightClick)
+	{
+		LeftClickState = eClickState.Pressed
+	}
+	else
+	{
+		RightClickState = eClickState.Pressed
+	}
 }
 
 function touchEnded()
 {
-	Clicked = true;
 	IsTouchScreen = true;
+
+	if (!RightClick)
+	{
+		LeftClickState = eClickState.Released
+	}
+	else
+	{
+		RightClickState = eClickState.Released
+	}
+}
+
+function mousePressed()
+{
+	if (IsTouchScreen)
+	{
+		return;
+	}
+
+	if (mouseButton == LEFT)
+	{
+		LeftClickState = eClickState.Pressed
+	}
+	else if (mouseButton == RIGHT)
+	{
+		RightClickState = eClickState.Pressed
+	}
 }
 
 function mouseReleased()
@@ -129,16 +199,16 @@ function mouseReleased()
 
 	if (mouseButton == LEFT)
 	{
-		SetModeAsDig()
+		LeftClickState = eClickState.Released
 	}
 	else if (mouseButton == RIGHT)
 	{
-		SetModeAsMark()
+		RightClickState = eClickState.Released
 	}
-
-	Clicked = true;
 }
+//#endregion
 
+//#region set mode functions
 function SetModeAsDig()
 {
 	console.log("Set as dig mode");
@@ -150,6 +220,7 @@ function SetModeAsMark()
 	console.log("Set as mark mode");
 	RightClick = true;
 }
+//#endregion
 
 function DrawMenuScreen(mousePos, pressed, isLeft)
 {
@@ -194,6 +265,7 @@ function ToMenu()
 	mineField.SetState(eFieldState.Menu)
 }
 
+//#region Get and Set for Map Values
 function SetNumberOfMines(value)
 {
 	mineField.NumberOfMines = 10 + round(value * 10)
@@ -215,6 +287,7 @@ function GetSizeOfMap()
 	value = (mineField.CellCountY - 10) / 10
 	return value
 }
+//#endregion
 
 function InRegion(mousePos)
 {
