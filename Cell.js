@@ -6,92 +6,78 @@ const eCellState = {
 	All: 15
 }
 
+NumberColours = {
+	1: "rgb(0,0,255)",
+	2: "rgb(0,255,0)",
+	3: "rgb(255,0,0)",
+	4: "rgb(0,0,255)",
+	5: "rgb(255,255,255)",
+	6: "rgb(255,255,255)",
+	7: "rgb(255,255,255)",
+	8: "rgb(255,255,255)",
+}
+
 class Cell
 {
-	constructor(gridPos, size, posOffSet)
-	{
-		this.GridPos = gridPos
-		this.Pos = createVector((gridPos.x*size.x)+posOffSet.x, (gridPos.y*size.y)+posOffSet.y)
-		this.Size = size
+	constructor(x, y){
+		this.GridX = x
+		this.GridY = y
 		this.IsMine = false
-		this.SetState(eCellState.Normal)
 		this.MinesNear = 0
 		this.MarkedNear = 0
-
-		var psPos = createVector(this.Pos.x+this.Size.x/2, this.Pos.y+this.Size.y/2)
-
-		this.NumberColours = {
-			1: color(0,0,255),
-			2: color(0,255,0),
-			3: color(255,0,0),
-			4: color(0,0,255),
-			5: color(255,255,255),
-			6: color(255,255,255),
-			7: color(255,255,255),
-			8: color(255,255,255),
-		}
+		this.State = eCellState.Normal
 	}
 
-	SetState(state)
-	{
+	CreateHtml(x, y, cellSize){
+		var cellHtml = "";
+		cellHtml += "<div id='cell_"+x+"_"+y+"' class='cell normal'"
+		cellHtml += " onclick=ClickCell("+x+","+y+",false)"
+		cellHtml += " oncontextmenu=ClickCell("+x+","+y+",true)"
+		cellHtml += " style='width:"+cellSize+"px; height:"+cellSize+"px; font-size:"+cellSize+"px;'";
+		cellHtml += ">";
+		cellHtml += "</div>";
+
+		return cellHtml;
+	}
+
+	SetState(state){
 		this.State = state
-	}
 
-	Draw()
-	{
-		fill(255,255,255)
-		stroke(0,0,0)
-		strokeWeight(2)
-		textSize(100);
+		var cell = document.getElementById("cell_"+this.GridX+"_"+this.GridY);
+
+		cell.classList = "cell"
 
 		switch (this.State)
 		{
 			case eCellState.Normal:
-				image(CellNormalImage, this.Pos.x, this.Pos.y, this.Size.x, this.Size.y);
+				cell.classList.add("normal");
 				break;
 
 			case eCellState.Flagged:
-				image(CellFlaggedImage, this.Pos.x, this.Pos.y, this.Size.x, this.Size.y);
+				cell.classList.add("flagged");
 				break;
 
 			case eCellState.QuestionMark:
-				image(CellQuestionMarkImage, this.Pos.x, this.Pos.y, this.Size.x, this.Size.y);
+				cell.classList.add("questionMark");
 				break;
 
 			case eCellState.Empty:
-				image(CellEmptyImage, this.Pos.x, this.Pos.y, this.Size.x, this.Size.y);
+				cell.classList.add("empty");
+
 				if (this.IsMine)
 				{
-					image(MineImage, this.Pos.x, this.Pos.y, this.Size.x, this.Size.y);
+					cell.innerHTML = '<div class="mine"></div>'
 				}
 				else
 				{
-					strokeWeight(1)
-					stroke(0,0,0,25)
-					noFill()
-					rect(this.Pos.x, this.Pos.y, this.Size.x, this.Size.y)
-
 					if (this.MinesNear > 0)
 					{
-						var colour = color(255,255,255)
-						if (this.MinesNear in this.NumberColours)
-						{
-							colour = this.NumberColours[this.MinesNear]
-						}
-						stroke(0,0,0)
-						fill(colour)
-						strokeWeight(6)
-
-						var textPos = createVector(this.Pos.x+this.Size.x/2, this.Pos.y)
-						TextToFitBox(this.MinesNear.toString(), textPos, this.Size)
+						var colour = NumberColours[this.MinesNear]
+						cell.innerHTML = "<p style='color: "+colour+"'>"+this.MinesNear+"</p>"
 					}
 				}
 				break;
 		}
-		// if (this.IsMine)
-		// {
-		// 	fill(255,0,0)
-		// 	rect(this.Pos.x, this.Pos.y, this.Size.x/4, this.Size.y/4)
-		// }
+		var cell = document.getElementById("cell_"+this.GridX+"_"+this.GridY);
 	}
 }

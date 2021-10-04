@@ -1,35 +1,47 @@
 const eFieldState = {
-	Menu: 1,
-	WaitingForStart: 2,
-	Playing: 4,
-	Won: 8,
-	Lose: 16,
-	All: 31
+	WaitingForStart: 1,
+	Playing: 2,
+	Won: 3,
+	Lose: 4
+}
+
+
+function ClickCell(x, y, isRightClick)
+{
+	Manager.TouchEvent(x, y, isRightClick)
 }
 
 class MineField
 {
-	constructor(pos, size)
+	constructor()
 	{
-		this.Pos = pos
-		this.Size = size
+		this.CellSize = 50
+		this.NumberOfMines = 10;
 
-		this.CellCountY = 10
-		this.CellCountX = 10
-		this.NumberOfMines = 10
+		var mineField = document.getElementById("mineField");
+
+		var height = mineField.clientHeight;
+		var width = mineField.clientWidth;
+
+		this.CellCountY = height / this.CellSize;
+		this.CellCountX = width / this.CellSize;
+
+		console.log(height, width);
+		console.log(this.CellCountY, this.CellCountX);
 
 		this.MakeField()
-		this.SetState(eFieldState.Menu)
+		this.SetState(eFieldState.WaitingForStart)
 
 		this.LastClickedCellX = 0
 		this.LastClickedCellY = 0
-		this.LastClickTime = millis()
+		this.LastClickTime = Time.getTime();
 	}
 
 	SetState(state)
 	{
 		if (this.State != state)
 		{
+			console.log(this.State, "->", state);
 			this.State = state
 			this.TimeInState = 0
 		}
@@ -38,23 +50,29 @@ class MineField
 	MakeField()
 	{
 		this.StopWatch = 0
-		this.NumInteractions = 0
 		this.SetState(eFieldState.WaitingForStart)
 		this.NumberCellsMarked = 0
 
-		var cellSize = createVector(this.Size.x/this.CellCountX, this.Size.y/this.CellCountY)
+		var mineField = document.getElementById("mineField");
+
 		this.Grid = []
 		var itemsToPickFrom = []
 		for (let y = 0; y < this.CellCountY; y++)
 		{
 			var temp = []
+			var rowText = "<div id='row_"+y+"' class='row' style='height:"+this.CellSize+"px;'>";
+
 			for (let x = 0; x < this.CellCountX; x++)
 			{
-				var cell  = new Cell(createVector(x, y), cellSize, this.Pos)
+				var cell  = new Cell(x, y)
 				temp.push(cell)
 				itemsToPickFrom.push(cell)
+
+				rowText += cell.CreateHtml(x, y, this.CellSize);
 			}
 			this.Grid.push(temp)
+			rowText += "</div>";
+			mineField.innerHTML += rowText;
 		}
 
 
@@ -79,7 +97,7 @@ class MineField
 		{
 			for (let x = 0; x < this.CellCountX; x++)
 			{
-				var cell = this.Grid[x][y]
+				var cell = this.Grid[y][x]
 
 				if (!cell.IsMine && cell.State != eCellState.Empty)
 				{
@@ -106,10 +124,10 @@ class MineField
 		});
 	}
 
-	GetAllowedNearCells(cell, stateFiliter=eCellState.Normal)
+	GetAllowedNearCells(cell, stateFilter=eCellState.Normal)
 	{
-		var x = cell.GridPos.x
-		var y = cell.GridPos.y
+		var x = cell.GridX
+		var y = cell.GridY
 
 		var cellList = []
 		for (let xOffSet = -1; xOffSet <= 1; xOffSet++)
@@ -123,7 +141,7 @@ class MineField
 					{
 						var subCell = this.Grid[y+yOffSet][x+xOffSet]
 
-						if ((subCell.State & stateFiliter) == subCell.State)
+						if ((subCell.State & stateFilter) == subCell.State)
 						{
 							cellList.push(subCell)
 						}
@@ -134,50 +152,20 @@ class MineField
 		return cellList
 	}
 
-	Draw(deltaTime)
-	{
-		if ((this.State == eFieldState.WaitingForStart ||
-			this.State == eFieldState.Playing) &&
-			this.NumInteractions > 0)
-		{
-			this.StopWatch += deltaTime
-		}
-		this.TimeInState += deltaTime
-
-		this.Grid.forEach(y =>
-		{
-			y.forEach(cell =>
-			{
-				cell.Draw()
-			});
-		});
-	}
-
-	TouchEvent(mousePos, isRight)
+	TouchEvent(cellX, cellY, isRight)
 	{
 		if (this.State != eFieldState.WaitingForStart &&
 			this.State != eFieldState.Playing)
 		{
 			return
 		}
-		var posX = mousePos.x-this.Pos.x
-		var posY = mousePos.y-this.Pos.y
 
-		if (posX < 0 || posY < 0 ||
-			posX > (this.Size.x) ||
-			posY > (this.Size.y))
-		{
-			return;
-		}
-
-		var cellX = int(posX / (this.Size.x/this.CellCountX))
-		var cellY = int(posY / (this.Size.y/this.CellCountY))
+		this.SetState(eFieldState.Playing)
 
 		var cell = this.Grid[cellY][cellX]
 
 		if (isRight)
 		{
-			this.NumInteractions += 1
 			switch (cell.State)
 			{
 				case eCellState.Normal:
@@ -199,11 +187,10 @@ class MineField
 		}
 		else if (cell.State != eCellState.Flagged && cell.State != eCellState.QuestionMark)
 		{
-			this.NumInteractions += 1
 
 			var doubleClick = this.LastClickedCellX == cellX &&
 							this.LastClickedCellY == cellY &&
-							(millis() - this.LastClickTime) < 200
+							(Time.getTime() - this.LastClickTime) < 200
 
 			this.RevealCell(cell, doubleClick)
 			// need to reveal area around it
@@ -216,7 +203,7 @@ class MineField
 
 			this.LastClickedCellX = cellX
 			this.LastClickedCellY = cellY
-			this.LastClickTime = millis()
+			this.LastClickTime = Time.getTime();
 		}
 		return
 	}
@@ -232,7 +219,6 @@ class MineField
 		}
 		else
 		{
-			console.log(cell.MarkedNear, cell.MinesNear);
 
 			if (cell.MinesNear == 0 ||
 				(doubleClick &&
@@ -245,3 +231,10 @@ class MineField
 		}
 	}
 }
+
+document.addEventListener('contextmenu', event => {
+	event.preventDefault();
+});
+
+var Time = new Date();
+var Manager = new MineField();
