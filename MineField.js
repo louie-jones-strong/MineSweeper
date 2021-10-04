@@ -151,14 +151,6 @@ class MineField
 				cell.Draw()
 			});
 		});
-
-		this.Grid.forEach(y =>
-		{
-			y.forEach(cell =>
-			{
-				cell.DrawParticles()
-			});
-		});
 	}
 
 	TouchEvent(mousePos, isRight)

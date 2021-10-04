@@ -19,7 +19,6 @@ class Cell
 		this.MarkedNear = 0
 
 		var psPos = createVector(this.Pos.x+this.Size.x/2, this.Pos.y+this.Size.y/2)
-		this.ParticleSystem = new ParticleSystem(psPos, this.Size)
 
 		this.NumberColours = {
 			1: color(0,0,255),
@@ -35,51 +34,6 @@ class Cell
 
 	SetState(state)
 	{
-		// this is not needed atm this.TimeInState = 0
-		if (this.State != state)
-		{
-			switch (state)
-			{
-				case eCellState.Empty:
-					if (this.IsMine)
-					{
-						this.ParticleSystem.SetColour(255, 0, 0)
-						this.ParticleSystem.SetEmitSetting(eEmitterShape.Point, 0.1, 50)
-						this.ParticleSystem.SetParticleLifeTime(2, 3)
-						this.ParticleSystem.SetParticleSize(10,20)
-					}
-					else
-					{
-						this.ParticleSystem.SetParticleSize(4,6)
-						this.ParticleSystem.SetEmitSetting(eEmitterShape.Square, 0.2, 30)
-						this.ParticleSystem.SetColour(255, 150, 0)
-						this.ParticleSystem.SetParticleLifeTime(0.1, 0.4)
-					}
-					this.ParticleSystem.Play()
-					break;
-
-				case eCellState.Flagged:
-
-					this.ParticleSystem.SetParticleSize(6,9)
-					this.ParticleSystem.SetEmitSetting(eEmitterShape.Square, 0.2, 30)
-					this.ParticleSystem.SetColour(0, 255, 0)
-					this.ParticleSystem.SetParticleLifeTime(0.5, 0.65)
-
-					this.ParticleSystem.Play()
-					break;
-
-				case eCellState.QuestionMark:
-					this.ParticleSystem.SetEmitSetting(eEmitterShape.Square, 0.2, 40)
-					this.ParticleSystem.SetParticleSize(4,6)
-					this.ParticleSystem.SetColour(128,0,128)
-					this.ParticleSystem.SetParticleLifeTime(0.1, 0.5)
-
-					this.ParticleSystem.Play()
-					break;
-				default:
-					break;
-			}
-		}
 		this.State = state
 	}
 
@@ -139,10 +93,5 @@ class Cell
 		// 	fill(255,0,0)
 		// 	rect(this.Pos.x, this.Pos.y, this.Size.x/4, this.Size.y/4)
 		// }
-	}
-
-	DrawParticles()
-	{
-		this.ParticleSystem.Draw()
 	}
 }
