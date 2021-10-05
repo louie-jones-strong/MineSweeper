@@ -3,71 +3,7 @@ body{
 	margin: 0;
 }
 
-#mineSweeper{
+#coverPageVisuals{
 	height: 100vh;
-	--ControlsHeight: 100px
-}
-
-#mineField{
 	width: 100%;
-	height: calc(100% - var(--ControlsHeight));;
-	background-color: red;
-
-	/* turn off selection */
-	user-select: none; /* supported by Chrome and Opera */
-	-webkit-user-select: none; /* Safari */
-	-khtml-user-select: none; /* Konqueror HTML */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-}
-
-#mineSweeperControls{
-	height: var(--ControlsHeight);
-	width: 100%;
-}
-
-.row{
-	background-color: blue;
-	display: flex;
-}
-
-.cell{
-	color: transparent;
-	background-size: contain;
-	transition: transform 0.25s;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.cell:hover{
-	transform: scale(1.2);
-}
-
-.cell p{
-	padding: 0px;
-	margin: 0px;
-}
-
-.normal{
-	background-image: url("Assets/Images/CellNormal.png");
-}
-
-.empty{
-	background-image: url("Assets/Images/Empty.png");
-}
-
-.mine{
-	background-image: url("Assets/Images/Mine.png");
-	width: 100%;
-	height: 100%;
-	background-size: contain;
-}
-
-.flagged{
-	background-image: url("Assets/Images/CellFlagged.png");
-}
-
-.questionMark{
-	background-image: url("Assets/Images/CellQuestionMark.png");
 }
