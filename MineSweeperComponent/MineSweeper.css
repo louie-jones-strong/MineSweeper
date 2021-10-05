@@ -1,6 +1,14 @@
 #mineSweeper{
 	height: 100%;
-	--ControlsHeight: 100px
+	--ControlsHeight: 100px;
+
+	/* pre load images */
+	content:
+	url("Images/CellNormal.png")
+	url("Images/Empty.png")
+	url("Images/Mine.png")
+	url("Images/CellFlagged.png")
+	url("Images/CellQuestionMark.png");
 }
 
 #mineField{
