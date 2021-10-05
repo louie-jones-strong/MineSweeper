@@ -98,14 +98,14 @@ class MineField
 
 		var mineField = document.getElementById("mineField");
 
-		var height = mineField.clientHeight;
 		var width = mineField.clientWidth;
+		var height = mineField.clientHeight;
 
-		this.CellCountY = height / this.CellSize;
 		this.CellCountX = width / this.CellSize;
+		this.CellCountY = height / this.CellSize;
 
-		console.log(height, width);
-		console.log(this.CellCountY, this.CellCountX);
+		console.log(width, height);
+		console.log(this.CellCountX, this.CellCountY);
 
 		this.MakeField()
 		this.SetState(eFieldState.WaitingForStart)
