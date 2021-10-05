@@ -5,12 +5,6 @@ const eFieldState = {
 	Lose: 4
 }
 
-
-function ClickCell(x, y, isRightClick)
-{
-	Manager.TouchEvent(x, y, isRightClick)
-}
-
 class MineField
 {
 	constructor()
@@ -54,6 +48,7 @@ class MineField
 		this.NumberCellsMarked = 0
 
 		var mineField = document.getElementById("mineField");
+		mineField.innerHTML = ""
 
 		this.Grid = []
 		var itemsToPickFrom = []
@@ -235,6 +230,20 @@ class MineField
 document.addEventListener('contextmenu', event => {
 	event.preventDefault();
 });
+
+
+window.addEventListener('resize', Resize);
+
+function Resize()
+{
+	console.log("resize");
+	Manager = new MineField();
+}
+
+function ClickCell(x, y, isRightClick)
+{
+	Manager.TouchEvent(x, y, isRightClick)
+}
 
 var Time = new Date();
 var Manager = new MineField();
