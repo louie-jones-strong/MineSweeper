@@ -237,7 +237,7 @@ window.addEventListener('resize', Resize);
 function Resize()
 {
 	console.log("resize");
-	Manager = new MineField();
+	// Manager = new MineField();
 }
 
 function ClickCell(x, y, isRightClick)
