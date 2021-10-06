@@ -35,12 +35,11 @@ class Cell
 		this.State = eCellState.Normal
 	}
 
-	CreateHtml(x, y, cellSize){
+	CreateHtml(x, y){
 		var cellHtml = "";
 		cellHtml += "<div id='cell_"+x+"_"+y+"' class='cell normal'"
 		cellHtml += " onclick=ClickCell("+x+","+y+",false)"
 		cellHtml += " oncontextmenu=ClickCell("+x+","+y+",true)"
-		cellHtml += " style='width:"+cellSize+"px; height:"+cellSize+"px; font-size:"+cellSize+"px;'";
 		cellHtml += ">";
 		cellHtml += "</div>";
 
@@ -93,16 +92,17 @@ class MineField
 {
 	constructor()
 	{
-		this.CellSize = 50
-		this.NumberOfMines = 10;
+		this.CellSize = 56
 
 		var mineField = document.getElementById("mineField");
 
 		var width = mineField.clientWidth;
 		var height = mineField.clientHeight;
 
-		this.CellCountX = width / this.CellSize;
-		this.CellCountY = height / this.CellSize;
+		this.CellCountX = Math.floor(width / this.CellSize);
+		this.CellCountY = Math.floor(height / this.CellSize);
+
+		this.NumberOfMines = Math.floor(this.CellCountX * this.CellCountY * 0.05);
 
 		console.log(width, height);
 		console.log(this.CellCountX, this.CellCountY);
@@ -139,7 +139,7 @@ class MineField
 		for (let y = 0; y < this.CellCountY; y++)
 		{
 			var temp = []
-			var rowText = "<div id='row_"+y+"' class='row' style='height:"+this.CellSize+"px;'>";
+			var rowText = "<div id='row_"+y+"' class='row'>";
 
 			for (let x = 0; x < this.CellCountX; x++)
 			{

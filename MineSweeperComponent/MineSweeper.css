@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
+
 #mineSweeper{
 	height: 100%;
 	--ControlsHeight: 100px;
@@ -13,8 +16,7 @@
 
 #mineField{
 	width: 100%;
-	height: calc(100% - var(--ControlsHeight));;
-	background-color: red;
+	height: calc(100% - var(--ControlsHeight));
 
 	/* turn off selection */
 	user-select: none; /* supported by Chrome and Opera */
@@ -31,17 +33,26 @@
 }
 
 .row{
-	background-color: blue;
 	display: flex;
+	height: 56px;
+	width: 100%;
 }
 
 .cell{
+	margin: 3px;
+	height: 50px;
+	width: 50px;
+	font-size: 50px;
+
 	color: transparent;
 	background-size: contain;
 	transition: transform 0.25s;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	overflow: hidden;
+	border-radius: 5px;
+	background-repeat: no-repeat;
 }
 
 .cell:hover{
@@ -51,6 +62,9 @@
 .cell p{
 	padding: 0px;
 	margin: 0px;
+	-webkit-font-smoothing: antialiased;
+	text-shadow: 0px 0px 1px black;
+	font-family: 'Roboto', sans-serif;
 }
 
 .normal{
