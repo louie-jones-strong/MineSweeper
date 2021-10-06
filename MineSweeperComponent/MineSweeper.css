@@ -24,6 +24,9 @@
 	-khtml-user-select: none; /* Konqueror HTML */
 	-moz-user-select: none; /* Firefox */
 	-ms-user-select: none; /* Internet Explorer/Edge */
+
+	align-items: center;
+	justify-content: center;
 }
 
 #mineSweeperControls{
@@ -36,6 +39,7 @@
 	display: flex;
 	height: 56px;
 	width: 100%;
+	justify-content: center;
 }
 
 .cell{
