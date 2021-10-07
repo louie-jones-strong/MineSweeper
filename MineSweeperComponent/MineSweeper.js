@@ -158,7 +158,6 @@ class MineField
 			});
 		}
 
-		this.StopWatch = 0;
 		this.NumberCellsMarked = 0;
 		this.SetState(eFieldState.WaitingForStart);
 		this.LastClickedCellX = 0;
@@ -332,8 +331,12 @@ function Resize()
 	}
 }
 
-function ClickCell(x, y, isRightClick)
-{
+function Restart() {
+	var gridSize = Manager.GetGridSize();
+	Manager.Reset(gridSize[0], gridSize[1]);
+}
+
+function ClickCell(x, y, isRightClick) {
 	Manager.TouchEvent(x, y, isRightClick)
 }
 
