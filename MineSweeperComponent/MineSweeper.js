@@ -26,7 +26,7 @@ NumberColours = {
 
 class Cell
 {
-	constructor(x, y){
+	constructor(x, y) {
 		this.GridX = x
 		this.GridY = y
 		this.IsMine = false
@@ -35,7 +35,7 @@ class Cell
 		this.State = eCellState.Normal
 	}
 
-	CreateHtml(x, y){
+	CreateHtml(x, y) {
 		var cellHtml = "";
 		cellHtml += "<div id='cell_"+x+"_"+y+"' class='cell normal'"
 		cellHtml += " onclick=ClickCell("+x+","+y+",false)"
@@ -46,7 +46,7 @@ class Cell
 		return cellHtml;
 	}
 
-	SetState(state){
+	SetState(state) {
 		this.State = state
 
 		var cell = document.getElementById("cell_"+this.GridX+"_"+this.GridY);
@@ -90,46 +90,32 @@ class Cell
 
 class MineField
 {
-	constructor()
-	{
-		this.CellSize = 56
+	constructor() {
+		this.CellSize = 56 //pixels
 
+		var gridSize = this.GetGridSize();
+		this.Reset(gridSize[0], gridSize[1]);
+	}
+
+	GetGridSize() {
 		var mineField = document.getElementById("mineField");
 
 		var width = mineField.clientWidth;
 		var height = mineField.clientHeight;
 
-		this.CellCountX = Math.floor(width / this.CellSize);
-		this.CellCountY = Math.floor(height / this.CellSize);
-
-		this.NumberOfMines = Math.floor(this.CellCountX * this.CellCountY * 0.05);
+		var cellCountX = Math.floor(width / this.CellSize);
+		var cellCountY = Math.floor(height / this.CellSize);
 
 		console.log(width, height);
-		console.log(this.CellCountX, this.CellCountY);
-
-		this.MakeField()
-		this.SetState(eFieldState.WaitingForStart)
-
-		this.LastClickedCellX = 0
-		this.LastClickedCellY = 0
-		this.LastClickTime = Time.getTime();
+		console.log(cellCountX, cellCountY);
+		return [cellCountX, cellCountY];
 	}
 
-	SetState(state)
-	{
-		if (this.State != state)
-		{
-			console.log(this.State, "->", state);
-			this.State = state
-			this.TimeInState = 0
-		}
-	}
+	Reset(cellCountX, cellCountY) {
+		this.CellCountX = cellCountX;
+		this.CellCountY = cellCountY;
 
-	MakeField()
-	{
-		this.StopWatch = 0
-		this.SetState(eFieldState.WaitingForStart)
-		this.NumberCellsMarked = 0
+		this.NumberOfMines = Math.floor(this.CellCountX * this.CellCountY * 0.05);
 
 		var mineField = document.getElementById("mineField");
 		mineField.innerHTML = ""
@@ -168,10 +154,25 @@ class MineField
 				nearCell.MinesNear += 1
 			});
 		}
+
+		this.StopWatch = 0;
+		this.NumberCellsMarked = 0;
+		this.SetState(eFieldState.WaitingForStart);
+		this.LastClickedCellX = 0;
+		this.LastClickedCellY = 0;
+		this.LastClickTime = Time.getTime();
 	}
 
-	CheckFinished()
-	{
+	SetState(state) {
+		if (this.State != state)
+		{
+			console.log(this.State, "->", state);
+			this.State = state
+			this.TimeInState = 0
+		}
+	}
+
+	CheckFinished() {
 		for (let y = 0; y < this.CellCountY; y++)
 		{
 			for (let x = 0; x < this.CellCountX; x++)
@@ -187,8 +188,7 @@ class MineField
 		return true
 	}
 
-	UpdateCellMarked(cell, marked)
-	{
+	UpdateCellMarked(cell, marked) {
 		var nearCells = this.GetAllowedNearCells(cell, eCellState.All)
 
 		nearCells.forEach(nearCell => {
@@ -203,8 +203,7 @@ class MineField
 		});
 	}
 
-	GetAllowedNearCells(cell, stateFilter=eCellState.Normal)
-	{
+	GetAllowedNearCells(cell, stateFilter=eCellState.Normal) {
 		var x = cell.GridX
 		var y = cell.GridY
 
@@ -231,8 +230,7 @@ class MineField
 		return cellList
 	}
 
-	TouchEvent(cellX, cellY, isRight)
-	{
+	TouchEvent(cellX, cellY, isRight) {
 		if (this.State != eFieldState.WaitingForStart &&
 			this.State != eFieldState.Playing)
 		{
@@ -287,8 +285,7 @@ class MineField
 		return
 	}
 
-	RevealCell(cell, doubleClick)
-	{
+	RevealCell(cell, doubleClick) {
 		cell.SetState(eCellState.Empty)
 		if (cell.IsMine)
 		{
@@ -321,7 +318,15 @@ window.addEventListener('resize', Resize);
 function Resize()
 {
 	console.log("resize");
-	// Manager = new MineField();
+
+	var gridSize = Manager.GetGridSize();
+
+	if (gridSize[0] != Manager.CellCountX ||
+		gridSize[1] != Manager.CellCountY)
+	{
+		console.log("New Grid");
+		Manager.Reset(gridSize[0], gridSize[1]);
+	}
 }
 
 function ClickCell(x, y, isRightClick)

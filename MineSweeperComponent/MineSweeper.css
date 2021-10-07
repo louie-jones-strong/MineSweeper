@@ -42,6 +42,7 @@
 	justify-content: center;
 }
 
+/* cells */
 .cell{
 	margin: 3px;
 	height: 50px;
@@ -92,4 +93,27 @@
 
 .questionMark{
 	background-image: url("Images/CellQuestionMark.png");
+
+/* controls */
+#mineSweeperControls{
+	height: var(--ControlsHeight);
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.control{
+	display: flex;
+	align-items: center;
+	margin: 1em;
+	border-radius: 1em;
+	border: 2px solid red;
+
+	padding: 0.25em;
+}
+
+.control > *{
+	margin: 0px;
+	padding: 0px;
 }
