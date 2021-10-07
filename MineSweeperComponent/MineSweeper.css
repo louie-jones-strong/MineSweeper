@@ -3,7 +3,7 @@
 
 #mineSweeper{
 	height: 100%;
-	--ControlsHeight: 100px;
+	--ControlsHeight: 50px;
 
 	/* pre load images */
 	content:

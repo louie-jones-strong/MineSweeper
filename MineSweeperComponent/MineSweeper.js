@@ -98,6 +98,7 @@ class MineField
 
 		var gridSize = this.GetGridSize();
 		this.Reset(gridSize[0], gridSize[1]);
+		this.StartTime = 0;
 	}
 
 	GetGridSize() {
@@ -162,7 +163,7 @@ class MineField
 		this.SetState(eFieldState.WaitingForStart);
 		this.LastClickedCellX = 0;
 		this.LastClickedCellY = 0;
-		this.LastClickTime = Time.getTime();
+		this.LastClickTime = Date.now();
 	}
 
 	SetState(state) {
@@ -239,7 +240,10 @@ class MineField
 			return
 		}
 
-		this.SetState(eFieldState.Playing)
+		if (this.State == eFieldState.WaitingForStart){
+			this.StartTime = Date.now();
+			this.SetState(eFieldState.Playing);
+		}
 
 		var cell = this.Grid[cellY][cellX]
 
@@ -269,7 +273,7 @@ class MineField
 
 			var doubleClick = this.LastClickedCellX == cellX &&
 							this.LastClickedCellY == cellY &&
-							(Time.getTime() - this.LastClickTime) < 200
+							(Date.now() - this.LastClickTime) < 200
 
 			this.RevealCell(cell, doubleClick)
 			// need to reveal area around it
@@ -277,12 +281,13 @@ class MineField
 			if (this.CheckFinished())
 			{
 				this.SetState(eFieldState.Won)
+				this.StartTime = Date.now() - this.StartTime;
 				return
 			}
 
 			this.LastClickedCellX = cellX
 			this.LastClickedCellY = cellY
-			this.LastClickTime = Time.getTime();
+			this.LastClickTime = Date.now();
 		}
 		return
 	}
@@ -292,6 +297,7 @@ class MineField
 		if (cell.IsMine)
 		{
 			this.SetState(eFieldState.Lose)
+			this.StartTime = Date.now() - this.StartTime;
 			//game is now over
 			return
 		}
@@ -340,5 +346,34 @@ function ClickCell(x, y, isRightClick) {
 	Manager.TouchEvent(x, y, isRightClick)
 }
 
-var Time = new Date();
+function GetTimeString(ms)
+{
+	var seconds = Math.round(ms / 1000);
+	var mins = Math.floor(seconds / 60);
+	var remainingSeconds = seconds % 60;
+
+	if (remainingSeconds < 10)
+	{
+		remainingSeconds = "0"+remainingSeconds;
+	}
+
+	return mins + ":" + remainingSeconds;
+}
+
+function UpdateControls(){
+
+	var elapsedTimeMs = Manager.StartTime;
+
+	if (Manager.State == eFieldState.Playing){
+		elapsedTimeMs = Date.now() - Manager.StartTime;
+	}
+
+	document.getElementById('mineSweeperTimer').innerHTML = GetTimeString(elapsedTimeMs);
+
+	document.getElementById('mineSweeperBombs').innerHTML = Manager.NumberOfMines - Manager.NumberCellsMarked;
+
+	setTimeout(UpdateControls, 500);
+}
+
 var Manager = new MineField();
+UpdateControls();
