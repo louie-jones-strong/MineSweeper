@@ -118,7 +118,7 @@ class MineField
 		this.CellCountX = cellCountX;
 		this.CellCountY = cellCountY;
 
-		this.NumberOfMines = Math.floor(this.CellCountX * this.CellCountY * 0.05);
+		this.NumberOfMines = Math.floor(this.CellCountX * this.CellCountY * 0.1);
 
 		var mineField = document.getElementById("mineField");
 		mineField.innerHTML = ""
