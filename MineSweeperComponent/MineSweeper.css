@@ -29,12 +29,6 @@
 	justify-content: center;
 }
 
-#mineSweeperControls{
-	height: var(--ControlsHeight);
-	width: 100%;
-	display: flex;
-}
-
 .row{
 	display: flex;
 	height: 56px;
@@ -47,7 +41,7 @@
 	margin: 3px;
 	height: 50px;
 	width: 50px;
-	font-size: 50px;
+	font-size: 35px;
 
 	color: transparent;
 	background-size: contain;
@@ -64,21 +58,18 @@
 	transform: scale(1.2);
 }
 
-.cell p{
-	padding: 0px;
-	margin: 0px;
-	-webkit-font-smoothing: antialiased;
-	text-shadow: 0px 0px 1px black;
-	font-family: 'Roboto', sans-serif;
-}
-
 .normal{
-	background-image: url("Images/CellNormal.png");
+	background-color: #999;
+	box-shadow: inset -3px -3px 5px #000000,
+				inset 3px 3px 5px #fff;
 }
 
 .empty{
-	background-image: url("Images/Empty.png");
+	background-color: #888;
+	box-shadow: inset 3px 3px 10px #000000;
 }
+
+
 
 .mine{
 	background-image: url("Images/Mine.png");
@@ -91,8 +82,13 @@
 	background-image: url("Images/CellFlagged.png");
 }
 
-.questionMark{
-	background-image: url("Images/CellQuestionMark.png");
+.cell p{
+	padding: 0px;
+	margin: 0px;
+	-webkit-font-smoothing: antialiased;
+	text-shadow: 0px 0px 1px black;
+	font-family: 'Roboto', sans-serif;
+}
 
 /* controls */
 #mineSweeperControls{

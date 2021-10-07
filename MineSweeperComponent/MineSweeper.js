@@ -52,6 +52,7 @@ class Cell
 		var cell = document.getElementById("cell_"+this.GridX+"_"+this.GridY);
 
 		cell.classList = "cell"
+		cell.innerHTML = ""
 
 		switch (this.State)
 		{
@@ -60,11 +61,13 @@ class Cell
 				break;
 
 			case eCellState.Flagged:
+				cell.classList.add("normal");
 				cell.classList.add("flagged");
 				break;
 
 			case eCellState.QuestionMark:
-				cell.classList.add("questionMark");
+				cell.classList.add("normal");
+				cell.innerHTML = "<p>?</p>"
 				break;
 
 			case eCellState.Empty:
