@@ -316,7 +316,7 @@ class MineField
 	}
 }
 
-document.addEventListener('contextmenu', event => {
+document.getElementById("mineField").addEventListener('contextmenu', event => {
 	event.preventDefault();
 });
 
