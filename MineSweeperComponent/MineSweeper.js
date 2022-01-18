@@ -280,8 +280,9 @@ class MineField
 
 			if (this.CheckFinished())
 			{
-				this.SetState(eFieldState.Won)
+				this.SetState(eFieldState.Won);
 				this.StartTime = Date.now() - this.StartTime;
+				ShowPopup("You Won", this.StartTime);
 				return
 			}
 
@@ -299,6 +300,7 @@ class MineField
 			this.SetState(eFieldState.Lose)
 			this.StartTime = Date.now() - this.StartTime;
 			//game is now over
+			ShowPopup("You Lose", this.StartTime);
 			return
 		}
 		else
@@ -340,6 +342,10 @@ function Resize()
 function Restart() {
 	var gridSize = Manager.GetGridSize();
 	Manager.Reset(gridSize[0], gridSize[1]);
+
+	var popupHolder = document.getElementById("popupHolder");
+	popupHolder.classList.remove("popupShowing");
+	popupHolder.innerHTML = "";
 }
 
 function ClickCell(x, y, isRightClick) {
@@ -373,6 +379,27 @@ function UpdateControls(){
 	document.getElementById('mineSweeperBombs').innerHTML = Manager.NumberOfMines - Manager.NumberCellsMarked;
 
 	setTimeout(UpdateControls, 500);
+}
+
+function ShowPopup(title, elapsedTimeMs)
+{
+	var popupHolder = document.getElementById("popupHolder");
+	popupHolder.classList.add("popupShowing");
+
+	popupHolder.innerHTML = `
+		<div class="popup">
+			<h1>Game Over!</h1>
+			<h2>${title}</h2>
+
+			<div id="mineSweeperControls">
+				<div class="control">
+					<span class="material-icons">schedule</span>
+					<p>${GetTimeString(elapsedTimeMs)}</p>
+				</div>
+			</div>
+
+			<button onclick="Restart()">Play Again</button>
+		</div>`;
 }
 
 var Manager = new MineField();
