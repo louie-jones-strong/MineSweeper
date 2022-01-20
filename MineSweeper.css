@@ -126,6 +126,7 @@ body{
 	margin: 1em;
 	border-radius: 1em;
 	border: 2px solid red;
+	background-color: white;
 
 	padding: 0.25em;
 	transition: transform 0.25s;
