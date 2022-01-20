@@ -47,12 +47,16 @@ class Cell
 	}
 
 	SetState(state) {
+		if (this.State == state)
+		{
+			return;
+		}
 		this.State = state
 
 		var cell = document.getElementById("cell_"+this.GridX+"_"+this.GridY);
 
 		cell.classList = "cell"
-		cell.innerHTML = ""
+		let html = "";
 
 		switch (this.State)
 		{
@@ -67,7 +71,7 @@ class Cell
 
 			case eCellState.QuestionMark:
 				cell.classList.add("normal");
-				cell.innerHTML = "<p>?</p>"
+				html = "<p>?</p>"
 				break;
 
 			case eCellState.Empty:
@@ -75,19 +79,20 @@ class Cell
 
 				if (this.IsMine)
 				{
-					cell.innerHTML = '<div class="mine"></div>'
+					html = '<div class="mine"></div>'
 				}
 				else
 				{
 					if (this.MinesNear > 0)
 					{
 						var colour = NumberColours[this.MinesNear]
-						cell.innerHTML = "<p style='color: "+colour+"'>"+this.MinesNear+"</p>"
+						html = "<p style='color: "+colour+"'>"+this.MinesNear+"</p>"
 					}
 				}
 				break;
 		}
-		var cell = document.getElementById("cell_"+this.GridX+"_"+this.GridY);
+
+		cell.innerHTML = html;
 	}
 }
 
@@ -110,8 +115,6 @@ class MineField
 		var cellCountX = Math.floor(width / this.CellSize);
 		var cellCountY = Math.floor(height / this.CellSize);
 
-		console.log(width, height);
-		console.log(cellCountX, cellCountY);
 		return [cellCountX, cellCountY];
 	}
 
@@ -164,12 +167,12 @@ class MineField
 		this.LastClickedCellX = 0;
 		this.LastClickedCellY = 0;
 		this.LastClickTime = Date.now();
+		this.StartTime = 0;
 	}
 
 	SetState(state) {
 		if (this.State != state)
 		{
-			console.log(this.State, "->", state);
 			this.State = state
 			this.TimeInState = 0
 		}
@@ -327,14 +330,12 @@ window.addEventListener('resize', Resize);
 
 function Resize()
 {
-	console.log("resize");
 
 	var gridSize = Manager.GetGridSize();
 
 	if (gridSize[0] != Manager.CellCountX ||
 		gridSize[1] != Manager.CellCountY)
 	{
-		console.log("New Grid");
 		Manager.Reset(gridSize[0], gridSize[1]);
 	}
 }
@@ -366,7 +367,8 @@ function GetTimeString(ms)
 	return mins + ":" + remainingSeconds;
 }
 
-function UpdateControls(){
+function UpdateControls()
+{
 
 	var elapsedTimeMs = Manager.StartTime;
 
